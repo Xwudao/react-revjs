@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsgo && vite build",
+    "build": "pnpm build:deob && tsgo && vite build",
+    "build:deob": "pnpm --filter @revjs/js-deob run build",
     "check": "oxlint .",
+    "cli:js-deob": "pnpm build:deob && node ./packages/js-deob/dist/cli.mjs",
     "fix": "oxlint --fix --fix-suggestions --fix-dangerously",
     "fmt": "oxfmt --write",
     "tsgo": "tsgo",
@@ -15,6 +17,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@revjs/js-deob": "workspace:*",
     "@tanstack/react-router": "^1.132.27",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -49,6 +52,7 @@
     "unplugin-auto-import": "^21.0.0",
     "unplugin-icons": "^23.0.1",
     "vite": "^8.0.4",
+    "vite-plugin-node-polyfills": "^0.25.0",
     "vite-plugin-checker": "^0.11.0"
   }
 }

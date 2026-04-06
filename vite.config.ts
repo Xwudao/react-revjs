@@ -6,18 +6,30 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import { defineConfig } from 'vite'
 import checker from 'vite-plugin-checker'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import UnoCSS from 'unocss/vite'
 
 const resolve = (p: string) => path.resolve(__dirname, p)
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    'process.env': JSON.stringify({}),
+    'process.versions.node': JSON.stringify('20.0.0'),
+  },
+  optimizeDeps: {
+    exclude: ['isolated-vm'],
+  },
   resolve: {
     alias: {
+      '@babel/core': resolve('src/shims/empty.ts'),
       '@': resolve('src'),
+      '@revjs/js-deob': resolve('packages/js-deob/src/index.ts'),
+      'isolated-vm': resolve('src/shims/empty.ts'),
     },
   },
   plugins: [
+    nodePolyfills({ exclude: ['fs'] }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     checker({

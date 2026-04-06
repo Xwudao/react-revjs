@@ -4,7 +4,8 @@ import {
   createRoute,
   createRouter,
 } from '@tanstack/react-router'
-import App from '@/App'
+import IndexPage from '@/pages/index'
+import JsDeobPage from '@/pages/js-deob'
 
 function RootLayout() {
   return <Outlet />
@@ -17,10 +18,16 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: App,
+  component: IndexPage,
 })
 
-const routeTree = rootRoute.addChildren([indexRoute])
+const jsDeobRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/js-deob',
+  component: JsDeobPage,
+})
+
+const routeTree = rootRoute.addChildren([indexRoute, jsDeobRoute])
 
 export const router = createRouter({
   routeTree,

@@ -7,7 +7,9 @@
     // "baseUrl": ".",
     "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@revjs/js-deob": ["./packages/js-deob/src/index.ts"],
+      "@revjs/js-deob/*": ["./packages/js-deob/src/*"]
     },
     "types": ["vite/client"],
     "skipLibCheck": true,
@@ -26,5 +28,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "packages/js-deob/src"]
 }

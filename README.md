@@ -1,75 +1,29 @@
-# React + TypeScript + Vite
+# react-revjs
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+这个项目现在包含一个内置的 JS Deob 工作台：
 
-Currently, two official plugins are available:
+- Web 页面入口：`/js-deob`
+- React 首页会跳转到 `src/pages/js-deob.tsx`
+- 反混淆核心代码位于 `packages/js-deob/src`
+- CLI 由 `tsdown` 构建，产物输出到 `packages/js-deob/dist`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 常用命令
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
+pnpm build
+pnpm build:deob
+pnpm cli:js-deob -- path/to/input.js -o path/to/output-dir
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 目录说明
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `packages/js-deob`: 从原始 `js-deobfuscator` 迁入的核心逻辑，保留独立源码，便于后续 AI 直接修改规则和变换。
+- `src/pages/js-deob.tsx`: React 版在线工作台。
+- `src/pages/js-deob.worker.ts`: 浏览器端反混淆 worker，避免大段 AST 处理阻塞 UI。
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 构建策略
+
+- `packages/js-deob` 使用 `tsdown` 构建库入口和 CLI 入口。
+- Vite 页面通过别名直接消费工作区源码，而不是依赖已构建的 dist，这样改完核心逻辑后 Web 端能立即使用最新实现。
+- 浏览器构建对 `isolated-vm` 和 `@babel/core` 做了空模块别名处理，避免将 Node 专属依赖带进前端包。
