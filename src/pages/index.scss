@@ -1,0 +1,193 @@
+.front-page {
+  display: grid;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+}
+
+.front-card {
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow: var(--shadow-xs);
+}
+
+.front-page__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.9fr);
+  gap: var(--space-5);
+  padding: var(--space-5);
+}
+
+.front-page__hero-main {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.front-page__eyebrow,
+.front-page__badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.front-page__eyebrow {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.front-page__title {
+  color: var(--color-text-strong);
+  font-size: clamp(1.75rem, 2.2vw, 2.375rem);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.front-page__copy,
+.front-page__panel-head p,
+.front-page__metric span,
+.front-page__list span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.front-page__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.front-page__action,
+.front-page__text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: fit-content;
+  min-height: 2.25rem;
+  padding: 0.4375rem 0.875rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.front-page__action {
+  border: 1px solid var(--color-accent-border);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.front-page__action--primary {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.front-page__tags,
+.front-page__principles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.front-page__tags span,
+.front-page__principles span,
+.front-page__badge {
+  border: 1px solid var(--color-border-soft);
+  background: color-mix(in srgb, var(--color-surface-muted) 72%, transparent);
+  color: var(--color-text-strong);
+}
+
+.front-page__tags span,
+.front-page__principles span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.875rem;
+  padding: 0.3125rem 0.625rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+}
+
+.front-page__hero-side,
+.front-page__list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.front-page__metric,
+.front-page__list > div {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface-muted) 48%, transparent);
+}
+
+.front-page__metric strong,
+.front-page__panel-head h2,
+.front-page__list strong {
+  color: var(--color-text-strong);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.front-page__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  gap: var(--space-5);
+}
+
+.front-page__panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.front-page__panel--feature {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-accent) 4%, transparent),
+      transparent 42%
+    ),
+    color-mix(in srgb, var(--color-surface) 94%, transparent);
+}
+
+.front-page__panel-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.front-page__text-link {
+  color: var(--color-accent);
+}
+
+@media (max-width: 960px) {
+  .front-page__hero,
+  .front-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .front-page {
+    padding-top: var(--space-3);
+  }
+
+  .front-page__hero,
+  .front-page__panel {
+    padding: var(--space-4);
+  }
+
+  .front-page__panel-head {
+    flex-direction: column;
+  }
+}
