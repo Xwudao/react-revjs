@@ -4,6 +4,10 @@
   padding-top: var(--space-4);
 }
 
+.js-deob-hidden-input {
+  display: none;
+}
+
 .js-deob-shell {
   display: grid;
   gap: var(--space-4);
@@ -249,6 +253,22 @@
   justify-content: space-between;
   gap: var(--space-3);
   margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.js-deob-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: var(--space-2);
+}
+
+.js-deob-editor-meta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
 }
 
 .js-deob-note,

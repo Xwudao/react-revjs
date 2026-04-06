@@ -1,6 +1,8 @@
 .root {
+  --editor-height: 22rem;
   --editor-min-height: 22rem;
 
+  min-height: 0;
   overflow: hidden;
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-xl);
@@ -27,16 +29,20 @@
   }
 
   &.compact {
+    --editor-height: 11rem;
     --editor-min-height: 11rem;
   }
 
   :global(.cm-editor) {
+    height: var(--editor-height);
     min-height: var(--editor-min-height);
     background: transparent;
   }
 
   :global(.cm-scroller) {
+    height: 100%;
     min-height: var(--editor-min-height);
+    overflow: auto;
     font-family: var(--font-mono);
     line-height: 1.65;
   }
@@ -54,6 +60,8 @@
   }
 
   :global(.cm-content) {
+    min-height: 100%;
+    box-sizing: border-box;
     padding: 0.875rem 0;
   }
 

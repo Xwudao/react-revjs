@@ -12,6 +12,7 @@ interface CodeEditorProps {
   value: string
   onChange?: (value: string) => void
   readOnly?: boolean
+  height?: string
   minHeight?: string
   compact?: boolean
 }
@@ -20,10 +21,12 @@ export function CodeEditor({
   value,
   onChange,
   readOnly = false,
+  height,
   minHeight = '22rem',
   compact = false,
 }: CodeEditorProps) {
   const { theme } = useAppConfig()
+  const editorHeight = height ?? minHeight
 
   const extensions = useMemo(() => [javascript(), EditorView.lineWrapping], [])
 
@@ -34,10 +37,16 @@ export function CodeEditor({
         compact && classes.compact,
         readOnly && classes.readOnly,
       )}
-      style={{ '--editor-min-height': minHeight } as CSSProperties}
+      style={
+        {
+          '--editor-height': editorHeight,
+          '--editor-min-height': minHeight,
+        } as CSSProperties
+      }
     >
       <CodeMirror
         value={value}
+        height={editorHeight}
         theme={theme === 'dark' ? oneDark : undefined}
         extensions={extensions}
         editable={!readOnly}

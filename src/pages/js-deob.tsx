@@ -123,10 +123,22 @@ function formatLogTime(timestamp: number) {
   return `${hours}:${minutes}:${seconds}.${milliseconds}`
 }
 
+const exampleCode = [
+  'var _0x5a2b = ["log", "Hello RevJS"];',
+  'function _0x1c2d(index) {',
+  '  return _0x5a2b[index];',
+  '}',
+  'function run() {',
+  '  console[_0x1c2d(0)](_0x1c2d(1));',
+  '}',
+  'run();',
+].join('\n')
+
 function JsDeobPage() {
   const workerRef = useRef<Worker | null>(null)
   const spawnWorkerRef = useRef<() => void>(() => {})
   const consoleBodyRef = useRef<HTMLDivElement | null>(null)
+  const sourceFileInputRef = useRef<HTMLInputElement | null>(null)
   const [sourceCode, setSourceCode] = useState(readStoredCode)
   const [outputCode, setOutputCode] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -306,10 +318,90 @@ function JsDeobPage() {
     setLogs([])
   }
 
+  async function importSourceFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+
+    if (!file) return
+
+    try {
+      const text = await file.text()
+      setSourceCode(text)
+      setErrorMessage('')
+      pushLog(`已导入文件: ${file.name} (${text.length} 字符)`)
+    } catch {
+      setErrorMessage('导入文件失败，请重新选择后再试。')
+    } finally {
+      event.target.value = ''
+    }
+  }
+
+  async function pasteFromClipboard() {
+    try {
+      const text = await navigator.clipboard.readText()
+
+      if (!text.trim()) {
+        setErrorMessage('剪贴板里没有可用内容。')
+        return
+      }
+
+      setSourceCode(text)
+      setErrorMessage('')
+      pushLog(`已从剪贴板载入 ${text.length} 字符`)
+    } catch {
+      setErrorMessage('读取剪贴板失败，请检查浏览器权限。')
+    }
+  }
+
+  function fillExample() {
+    setSourceCode(exampleCode)
+    setErrorMessage('')
+    pushLog('已填充示例代码。')
+  }
+
+  function applyOutputToInput() {
+    if (!outputCode) return
+
+    setSourceCode(outputCode)
+    setErrorMessage('')
+    pushLog('已将处理结果回填到输入区。')
+  }
+
+  function downloadOutput() {
+    if (!outputCode) return
+
+    const blob = new Blob([outputCode], { type: 'text/javascript;charset=utf-8' })
+    const url = window.URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+
+    anchor.href = url
+    anchor.download = 'revjs-output.js'
+    anchor.click()
+
+    window.URL.revokeObjectURL(url)
+    pushLog('已下载处理结果。')
+  }
+
+  const sourceLineCount = useMemo(
+    () => (sourceCode ? sourceCode.split(/\r?\n/).length : 0),
+    [sourceCode],
+  )
+  const outputLineCount = useMemo(
+    () => (outputCode ? outputCode.split(/\r?\n/).length : 0),
+    [outputCode],
+  )
+
   return (
     <FrontShell current="js-deob">
       <main className={clsx(classes.jsDeobPage)}>
         <div className={clsx(classes.jsDeobShell)}>
+          <input
+            ref={sourceFileInputRef}
+            type="file"
+            accept=".js,.mjs,.cjs,.txt,text/javascript,application/javascript"
+            className={clsx(classes.jsDeobHiddenInput)}
+            onChange={importSourceFile}
+          />
+
           <section className={clsx(classes.jsDeobPanel, classes.jsDeobHero)}>
             <div className={clsx(classes.jsDeobHeroMain)}>
               <span className={clsx(classes.jsDeobKicker)}>
@@ -361,19 +453,6 @@ function JsDeobPage() {
                   aria-hidden="true"
                 />
                 {isRunning ? '处理中...' : '开始处理'}
-              </button>
-              <button
-                type="button"
-                className={clsx(classes.jsDeobButton)}
-                onClick={copyOutput}
-                disabled={!outputCode}
-              >
-                <span className="i-mdi-content-copy" aria-hidden="true" />
-                {copyState === 'done'
-                  ? '已复制结果'
-                  : copyState === 'failed'
-                    ? '复制失败'
-                    : '复制输出'}
               </button>
               <button
                 type="button"
@@ -624,6 +703,39 @@ function JsDeobPage() {
                     <div>
                       <h2 className={clsx(classes.jsDeobSectionTitle)}>原始代码</h2>
                       <p>把需要处理的 JavaScript 直接贴进来。</p>
+                      <span className={clsx(classes.jsDeobEditorMeta)}>
+                        {sourceCode.length} 字符 · {sourceLineCount} 行
+                      </span>
+                    </div>
+
+                    <div className={clsx(classes.jsDeobEditorActions)}>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={() => sourceFileInputRef.current?.click()}
+                      >
+                        <span className="i-mdi-file-upload-outline" aria-hidden="true" />
+                        导入文件
+                      </button>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={pasteFromClipboard}
+                      >
+                        <span
+                          className="i-mdi-clipboard-arrow-down-outline"
+                          aria-hidden="true"
+                        />
+                        粘贴剪贴板
+                      </button>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={fillExample}
+                      >
+                        <span className="i-mdi-flask-outline" aria-hidden="true" />
+                        填充示例
+                      </button>
                     </div>
                   </div>
 
@@ -635,6 +747,43 @@ function JsDeobPage() {
                     <div>
                       <h2 className={clsx(classes.jsDeobSectionTitle)}>处理结果</h2>
                       <p>执行完成后会在这里显示整理后的输出。</p>
+                      <span className={clsx(classes.jsDeobEditorMeta)}>
+                        {outputCode.length} 字符 · {outputLineCount} 行
+                      </span>
+                    </div>
+
+                    <div className={clsx(classes.jsDeobEditorActions)}>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={copyOutput}
+                        disabled={!outputCode}
+                      >
+                        <span className="i-mdi-content-copy" aria-hidden="true" />
+                        {copyState === 'done'
+                          ? '已复制结果'
+                          : copyState === 'failed'
+                            ? '复制失败'
+                            : '复制输出'}
+                      </button>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={downloadOutput}
+                        disabled={!outputCode}
+                      >
+                        <span className="i-mdi-download" aria-hidden="true" />
+                        下载结果
+                      </button>
+                      <button
+                        type="button"
+                        className={clsx(classes.jsDeobInlineAction)}
+                        onClick={applyOutputToInput}
+                        disabled={!outputCode}
+                      >
+                        <span className="i-mdi-swap-horizontal" aria-hidden="true" />
+                        回填输入
+                      </button>
                     </div>
                   </div>
 
