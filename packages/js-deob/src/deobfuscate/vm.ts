@@ -8,28 +8,47 @@ import { deobLogger, generate } from '../ast-utils'
 export type Sandbox = (code: string) => Promise<unknown>
 
 export function createNodeSandbox(): Sandbox {
+  let contextPromise:
+    | Promise<{
+        context: Awaited<
+          ReturnType<
+            InstanceType<
+              (typeof import('isolated-vm'))['default']['Isolate']
+            >['createContext']
+          >
+        >
+      }>
+    | undefined
+
+  async function getContext() {
+    if (!contextPromise) {
+      contextPromise = (async () => {
+        const {
+          default: { Isolate },
+        } = await import('isolated-vm')
+        const isolate = new Isolate()
+        const context = await isolate.createContext()
+
+        return { context }
+      })()
+    }
+
+    return contextPromise
+  }
+
   return async (code: string) => {
-    const {
-      default: { Isolate },
-    } = await import('isolated-vm')
-    const isolate = new Isolate()
-    const context = await isolate.createContext()
-    const result = (await context.eval(code, {
+    const { context } = await getContext()
+
+    return (await context.eval(code, {
       timeout: 10_000,
       copy: true,
       filename: 'file:///obfuscated.js',
     })) as unknown
-    context.release()
-    isolate.dispose()
-    return result
   }
 }
 
 export function createBrowserSandbox(): Sandbox {
-  return () => {
-    // TODO: use sandybox (not available in web workers though)
-    throw new Error('Custom Sandbox implementation required.')
-  }
+  return async (code: string) => globalThis.eval(code) as unknown
 }
 
 export class VMDecoder {

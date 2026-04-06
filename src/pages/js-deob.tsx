@@ -1,12 +1,5 @@
 import type { Options } from '@revjs/js-deob'
-import {
-  startTransition,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { FrontShell } from '@/components/front-shell'
 import './js-deob.scss'
 
@@ -97,6 +90,7 @@ function formatLogTime(timestamp: number) {
 
 function JsDeobPage() {
   const workerRef = useRef<Worker | null>(null)
+  const spawnWorkerRef = useRef<() => void>(() => {})
   const consoleBodyRef = useRef<HTMLDivElement | null>(null)
   const [sourceCode, setSourceCode] = useState(readStoredCode)
   const [outputCode, setOutputCode] = useState('')
@@ -106,10 +100,15 @@ function JsDeobPage() {
   const [copyState, setCopyState] = useState<'idle' | 'done' | 'failed'>('idle')
   const [logs, setLogs] = useState<ConsoleEntry[]>([])
   const [options, setOptions] = useState<EditableOptions>(readStoredOptions)
+  const optionsRef = useRef(options)
 
   const keywordsValue = useMemo(() => options.keywords.join(', '), [options.keywords])
 
-  const pushLog = useEffectEvent((message: string, timestamp = Date.now()) => {
+  useEffect(() => {
+    optionsRef.current = options
+  }, [options])
+
+  function pushLog(message: string, timestamp = Date.now()) {
     setLogs((current) => [
       ...current.slice(-(maxLogs - 1)),
       {
@@ -118,57 +117,57 @@ function JsDeobPage() {
         timestamp,
       },
     ])
-  })
+  }
 
-  const handleWorkerError = useEffectEvent((message: string, timestamp = Date.now()) => {
+  function handleWorkerError(message: string, timestamp = Date.now()) {
     pushLog(message, timestamp)
     setErrorMessage(message)
     setIsRunning(false)
-  })
+  }
 
-  const handleWorkerMessage = useEffectEvent((event: MessageEvent<WorkerMessage>) => {
-    const message = event.data
-
-    if (message.type === 'log') {
-      pushLog(message.message, message.timestamp)
-      return
-    }
-
-    if (message.type === 'result') {
-      pushLog(
-        `反混淆完成，用时 ${message.parseTime} ms | 定位方式: ${options.decoderLocationMethod}`,
-      )
-      startTransition(() => {
-        setOutputCode(message.code)
-        setParseTime(message.parseTime)
-        setErrorMessage('')
-        setIsRunning(false)
-      })
-      return
-    }
-
-    handleWorkerError(message.message, message.timestamp)
-  })
-
-  const spawnWorker = useEffectEvent(() => {
+  spawnWorkerRef.current = () => {
     workerRef.current?.terminate()
 
     const worker = new Worker(workerUrl, { type: 'module' })
     workerRef.current = worker
-    worker.onmessage = handleWorkerMessage
+
+    worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      const message = event.data
+
+      if (message.type === 'log') {
+        pushLog(message.message, message.timestamp)
+        return
+      }
+
+      if (message.type === 'result') {
+        pushLog(
+          `反混淆完成，用时 ${message.parseTime} ms | 定位方式: ${optionsRef.current.decoderLocationMethod}`,
+        )
+        startTransition(() => {
+          setOutputCode(message.code)
+          setParseTime(message.parseTime)
+          setErrorMessage('')
+          setIsRunning(false)
+        })
+        return
+      }
+
+      handleWorkerError(message.message, message.timestamp)
+    }
+
     worker.onerror = () => {
       handleWorkerError('浏览器 worker 执行失败，请查看控制台。')
     }
-  })
+  }
 
   useEffect(() => {
-    spawnWorker()
+    spawnWorkerRef.current()
 
     return () => {
       workerRef.current?.terminate()
       workerRef.current = null
     }
-  }, [spawnWorker])
+  }, [])
 
   useEffect(() => {
     window.localStorage.setItem(storageKeys.code, sourceCode)
@@ -228,7 +227,7 @@ function JsDeobPage() {
     )
 
     if (!workerRef.current) {
-      spawnWorker()
+      spawnWorkerRef.current()
     }
 
     workerRef.current?.postMessage({
@@ -240,7 +239,7 @@ function JsDeobPage() {
   function cancelDeobfuscation() {
     if (!isRunning) return
 
-    spawnWorker()
+    spawnWorkerRef.current()
     setIsRunning(false)
     setErrorMessage('已终止当前运行。')
     pushLog('已终止当前运行。')

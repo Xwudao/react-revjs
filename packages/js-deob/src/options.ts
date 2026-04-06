@@ -28,6 +28,10 @@ export interface Options {
   sandbox?: Sandbox
 }
 
+export function createDefaultSandbox() {
+  return isBrowser() ? createBrowserSandbox() : createNodeSandbox()
+}
+
 export const defaultOptions: Required<Options> = {
   decoderLocationMethod: 'stringArray',
   decoderStringArrayLength: 0,
@@ -41,13 +45,14 @@ export const defaultOptions: Required<Options> = {
   mangleMode: 'off',
   manglePattern: '',
   mangleFlags: '',
-  sandbox: isBrowser() ? createBrowserSandbox() : createNodeSandbox(),
+  sandbox: createDefaultSandbox(),
 }
 
 export function mergeOptions(options: Options): asserts options is Required<Options> {
   const mergedOptions: Required<Options> = {
     ...defaultOptions,
     ...options,
+    sandbox: options.sandbox ?? createDefaultSandbox(),
   }
   // backward compatibility: boolean mangle -> mode
   if (!options.mangleMode && typeof (options as any).mangle === 'boolean') {
