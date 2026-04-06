@@ -1,11 +1,12 @@
 import type { CSSProperties } from 'react'
 import { useMemo } from 'react'
+import clsx from 'clsx'
 import { javascript } from '@codemirror/lang-javascript'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { EditorView } from '@codemirror/view'
 import CodeMirror from '@uiw/react-codemirror'
 import { useAppConfig } from '@/provider/ConfigProvider'
-import './code-editor.scss'
+import classes from './code-editor.module.scss'
 
 interface CodeEditorProps {
   value: string
@@ -28,9 +29,11 @@ export function CodeEditor({
 
   return (
     <div
-      className="app-code-editor"
-      data-compact={compact}
-      data-readonly={readOnly}
+      className={clsx(
+        classes.root,
+        compact && classes.compact,
+        readOnly && classes.readOnly,
+      )}
       style={{ '--editor-min-height': minHeight } as CSSProperties}
     >
       <CodeMirror

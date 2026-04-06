@@ -30,7 +30,7 @@
     color-mix(in srgb, var(--color-surface) 95%, transparent);
 }
 
-.js-deob-hero__main,
+.js-deob-hero-main,
 .js-deob-section-head,
 .js-deob-field,
 .js-deob-form,
@@ -40,7 +40,7 @@
   display: grid;
 }
 
-.js-deob-hero__main,
+.js-deob-hero-main,
 .js-deob-section-head {
   gap: var(--space-3);
 }
@@ -95,12 +95,12 @@
   border: 1px solid color-mix(in srgb, var(--color-success) 28%, var(--color-border-soft));
   background: color-mix(in srgb, var(--color-success) 8%, transparent);
   color: var(--color-success);
-}
 
-.js-deob-status-badge[data-running='true'] {
-  border-color: color-mix(in srgb, var(--color-warning) 28%, var(--color-border-soft));
-  background: color-mix(in srgb, var(--color-warning) 10%, transparent);
-  color: var(--color-warning);
+  &[data-running='true'] {
+    border-color: color-mix(in srgb, var(--color-warning) 28%, var(--color-border-soft));
+    background: color-mix(in srgb, var(--color-warning) 10%, transparent);
+    color: var(--color-warning);
+  }
 }
 
 .js-deob-highlights {
@@ -149,29 +149,27 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-accent-border);
+    color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.56;
+    cursor: not-allowed;
+  }
 }
 
-.js-deob-button:hover,
-.js-deob-inline-action:hover {
-  border-color: var(--color-accent-border);
-  color: var(--color-accent);
-}
-
-.js-deob-button:disabled,
-.js-deob-inline-action:disabled {
-  opacity: 0.56;
-  cursor: not-allowed;
-}
-
-.js-deob-button--primary {
+.js-deob-button-primary {
   border-color: var(--color-accent-border);
   background: var(--color-accent);
   color: var(--color-accent-contrast);
-}
 
-.js-deob-button--primary:hover {
-  color: var(--color-accent-contrast);
-  background: var(--color-accent-hover);
+  &:hover {
+    color: var(--color-accent-contrast);
+    background: var(--color-accent-hover);
+  }
 }
 
 .js-deob-section-title,
@@ -215,12 +213,12 @@
   border-radius: var(--radius-xl);
   background: color-mix(in srgb, var(--color-surface) 96%, transparent);
   color: var(--color-text-strong);
-}
 
-.js-deob-input:focus {
-  outline: none;
-  border-color: var(--color-accent-border);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent);
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent-border);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent);
+  }
 }
 
 .js-deob-tips {

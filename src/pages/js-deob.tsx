@@ -1,11 +1,12 @@
 import type { Options } from '@revjs/js-deob'
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import clsx from 'clsx'
 import { AppCheckbox } from '@/components/ui/app-checkbox'
 import { AppSelect, type AppSelectOption } from '@/components/ui/app-select'
 import { CodeEditor } from '@/components/ui/code-editor'
 import { FrontShell } from '@/components/front-shell'
 import JsDeobWorker from './js-deob.worker?worker'
-import './js-deob.scss'
+import classes from './js-deob.module.scss'
 
 type EditableOptions = Required<Omit<Options, 'sandbox'>>
 
@@ -307,18 +308,21 @@ function JsDeobPage() {
 
   return (
     <FrontShell current="js-deob">
-      <main className="js-deob-page">
-        <div className="js-deob-shell">
-          <section className="js-deob-panel js-deob-hero">
-            <div className="js-deob-hero__main">
-              <span className="js-deob-kicker">
+      <main className={clsx(classes.jsDeobPage)}>
+        <div className={clsx(classes.jsDeobShell)}>
+          <section className={clsx(classes.jsDeobPanel, classes.jsDeobHero)}>
+            <div className={clsx(classes.jsDeobHeroMain)}>
+              <span className={clsx(classes.jsDeobKicker)}>
                 <span className="i-mdi-code-json text-[15px]" aria-hidden="true" />
                 在线解混淆
               </span>
 
-              <div className="js-deob-title-row">
-                <h1 className="js-deob-title">JS Deob</h1>
-                <span className="js-deob-status-badge" data-running={isRunning}>
+              <div className={clsx(classes.jsDeobTitleRow)}>
+                <h1 className={clsx(classes.jsDeobTitle)}>JS Deob</h1>
+                <span
+                  className={clsx(classes.jsDeobStatusBadge)}
+                  data-running={isRunning}
+                >
                   <span
                     className={
                       isRunning
@@ -331,22 +335,22 @@ function JsDeobPage() {
                 </span>
               </div>
 
-              <p className="js-deob-copy">
+              <p className={clsx(classes.jsDeobCopy)}>
                 直接粘贴待处理的
                 JavaScript，调整识别方式后运行，即可查看整理后的结果和日志。
               </p>
 
-              <div className="js-deob-highlights">
+              <div className={clsx(classes.jsDeobHighlights)}>
                 <span>适合常见字符串数组场景</span>
                 <span>支持自定义注入代码</span>
                 <span>输出与日志分区查看</span>
               </div>
             </div>
 
-            <div className="js-deob-actions">
+            <div className={clsx(classes.jsDeobActions)}>
               <button
                 type="button"
-                className="js-deob-button js-deob-button--primary"
+                className={clsx(classes.jsDeobButton, classes.jsDeobButtonPrimary)}
                 onClick={runDeobfuscation}
                 disabled={isRunning}
               >
@@ -360,7 +364,7 @@ function JsDeobPage() {
               </button>
               <button
                 type="button"
-                className="js-deob-button"
+                className={clsx(classes.jsDeobButton)}
                 onClick={copyOutput}
                 disabled={!outputCode}
               >
@@ -373,33 +377,37 @@ function JsDeobPage() {
               </button>
               <button
                 type="button"
-                className="js-deob-button"
+                className={clsx(classes.jsDeobButton)}
                 onClick={cancelDeobfuscation}
                 disabled={!isRunning}
               >
                 <span className="i-mdi-stop-circle-outline" aria-hidden="true" />
                 停止
               </button>
-              <button type="button" className="js-deob-button" onClick={resetAll}>
+              <button
+                type="button"
+                className={clsx(classes.jsDeobButton)}
+                onClick={resetAll}
+              >
                 <span className="i-mdi-refresh" aria-hidden="true" />
                 清空重来
               </button>
             </div>
           </section>
 
-          <section className="js-deob-grid">
-            <aside className="js-deob-sidebar">
-              <div className="js-deob-panel js-deob-section">
-                <div className="js-deob-section-head">
-                  <h2 className="js-deob-section-title">处理选项</h2>
-                  <p className="js-deob-section-copy">
+          <section className={clsx(classes.jsDeobGrid)}>
+            <aside className={clsx(classes.jsDeobSidebar)}>
+              <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+                <div className={clsx(classes.jsDeobSectionHead)}>
+                  <h2 className={clsx(classes.jsDeobSectionTitle)}>处理选项</h2>
+                  <p className={clsx(classes.jsDeobSectionCopy)}>
                     保留最常用的选项，避免一开始就看到过多解释。
                   </p>
                 </div>
 
-                <div className="js-deob-form">
-                  <div className="js-deob-field">
-                    <span className="js-deob-field-label">识别方式</span>
+                <div className={clsx(classes.jsDeobForm)}>
+                  <div className={clsx(classes.jsDeobField)}>
+                    <span className={clsx(classes.jsDeobFieldLabel)}>识别方式</span>
                     <AppSelect
                       value={options.decoderLocationMethod}
                       options={decoderMethodOptions}
@@ -411,13 +419,16 @@ function JsDeobPage() {
                   </div>
 
                   {options.decoderLocationMethod === 'callCount' && (
-                    <div className="js-deob-field">
-                      <label className="js-deob-field-label" htmlFor="decoder-call-count">
+                    <div className={clsx(classes.jsDeobField)}>
+                      <label
+                        className={clsx(classes.jsDeobFieldLabel)}
+                        htmlFor="decoder-call-count"
+                      >
                         调用次数
                       </label>
                       <input
                         id="decoder-call-count"
-                        className="js-deob-input"
+                        className={clsx(classes.jsDeobInput)}
                         type="number"
                         min="1"
                         step="1"
@@ -434,16 +445,16 @@ function JsDeobPage() {
                   )}
 
                   {options.decoderLocationMethod === 'stringArray' && (
-                    <div className="js-deob-field">
+                    <div className={clsx(classes.jsDeobField)}>
                       <label
-                        className="js-deob-field-label"
+                        className={clsx(classes.jsDeobFieldLabel)}
                         htmlFor="decoder-string-array-length"
                       >
                         字符串数组长度
                       </label>
                       <input
                         id="decoder-string-array-length"
-                        className="js-deob-input"
+                        className={clsx(classes.jsDeobInput)}
                         type="number"
                         min="0"
                         step="1"
@@ -462,7 +473,7 @@ function JsDeobPage() {
                           })
                         }}
                       />
-                      <span className="js-deob-field-hint">
+                      <span className={clsx(classes.jsDeobFieldHint)}>
                         已知长度时填写会更快命中目标。
                       </span>
                     </div>
@@ -470,13 +481,16 @@ function JsDeobPage() {
 
                   {options.decoderLocationMethod === 'evalCode' && (
                     <>
-                      <div className="js-deob-field">
-                        <label className="js-deob-field-label" htmlFor="decoder-names">
+                      <div className={clsx(classes.jsDeobField)}>
+                        <label
+                          className={clsx(classes.jsDeobFieldLabel)}
+                          htmlFor="decoder-names"
+                        >
                           解密函数名
                         </label>
                         <input
                           id="decoder-names"
-                          className="js-deob-input"
+                          className={clsx(classes.jsDeobInput)}
                           type="text"
                           value={
                             typeof options.decoderNames === 'string'
@@ -489,8 +503,8 @@ function JsDeobPage() {
                           }
                         />
                       </div>
-                      <div className="js-deob-field">
-                        <span className="js-deob-field-label">注入代码</span>
+                      <div className={clsx(classes.jsDeobField)}>
+                        <span className={clsx(classes.jsDeobFieldLabel)}>注入代码</span>
                         <CodeEditor
                           compact
                           minHeight="11rem"
@@ -509,13 +523,16 @@ function JsDeobPage() {
                   />
 
                   {options.isMarkEnable && (
-                    <div className="js-deob-field">
-                      <label className="js-deob-field-label" htmlFor="keywords">
+                    <div className={clsx(classes.jsDeobField)}>
+                      <label
+                        className={clsx(classes.jsDeobFieldLabel)}
+                        htmlFor="keywords"
+                      >
                         关键字列表
                       </label>
                       <input
                         id="keywords"
-                        className="js-deob-input"
+                        className={clsx(classes.jsDeobInput)}
                         type="text"
                         value={keywordsValue}
                         placeholder="debugger, sign, token"
@@ -526,8 +543,8 @@ function JsDeobPage() {
                     </div>
                   )}
 
-                  <div className="js-deob-field">
-                    <span className="js-deob-field-label">变量名优化</span>
+                  <div className={clsx(classes.jsDeobField)}>
+                    <span className={clsx(classes.jsDeobFieldLabel)}>变量名优化</span>
                     <AppSelect
                       value={options.mangleMode}
                       options={mangleModeOptions}
@@ -538,13 +555,16 @@ function JsDeobPage() {
 
                   {options.mangleMode === 'custom' && (
                     <>
-                      <div className="js-deob-field">
-                        <label className="js-deob-field-label" htmlFor="mangle-pattern">
+                      <div className={clsx(classes.jsDeobField)}>
+                        <label
+                          className={clsx(classes.jsDeobFieldLabel)}
+                          htmlFor="mangle-pattern"
+                        >
                           匹配正则
                         </label>
                         <input
                           id="mangle-pattern"
-                          className="js-deob-input"
+                          className={clsx(classes.jsDeobInput)}
                           type="text"
                           value={options.manglePattern}
                           placeholder="例如: _0x[a-f\\d]+"
@@ -553,13 +573,16 @@ function JsDeobPage() {
                           }
                         />
                       </div>
-                      <div className="js-deob-field">
-                        <label className="js-deob-field-label" htmlFor="mangle-flags">
+                      <div className={clsx(classes.jsDeobField)}>
+                        <label
+                          className={clsx(classes.jsDeobFieldLabel)}
+                          htmlFor="mangle-flags"
+                        >
                           Flags
                         </label>
                         <input
                           id="mangle-flags"
-                          className="js-deob-input"
+                          className={clsx(classes.jsDeobInput)}
                           type="text"
                           value={options.mangleFlags}
                           placeholder="例如: gim"
@@ -573,12 +596,20 @@ function JsDeobPage() {
                 </div>
               </div>
 
-              <div className="js-deob-panel js-deob-section js-deob-tips">
-                <div className="js-deob-section-head">
-                  <h2 className="js-deob-section-title">使用建议</h2>
-                  <p className="js-deob-section-copy">不确定怎么选时，可以从这里开始。</p>
+              <div
+                className={clsx(
+                  classes.jsDeobPanel,
+                  classes.jsDeobSection,
+                  classes.jsDeobTips,
+                )}
+              >
+                <div className={clsx(classes.jsDeobSectionHead)}>
+                  <h2 className={clsx(classes.jsDeobSectionTitle)}>使用建议</h2>
+                  <p className={clsx(classes.jsDeobSectionCopy)}>
+                    不确定怎么选时，可以从这里开始。
+                  </p>
                 </div>
-                <ul className="js-deob-side-notes">
+                <ul className={clsx(classes.jsDeobSideNotes)}>
                   <li>先试字符串数组长度模式，命中率通常更高。</li>
                   <li>已知解密调用规模时，再切到调用次数模式。</li>
                   <li>遇到缺环境或缺函数时，再使用注入自定义代码。</li>
@@ -586,12 +617,12 @@ function JsDeobPage() {
               </div>
             </aside>
 
-            <section className="js-deob-workbench">
-              <div className="js-deob-editors-grid">
-                <div className="js-deob-panel js-deob-section">
-                  <div className="js-deob-editor-head">
+            <section className={clsx(classes.jsDeobWorkbench)}>
+              <div className={clsx(classes.jsDeobEditorsGrid)}>
+                <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+                  <div className={clsx(classes.jsDeobEditorHead)}>
                     <div>
-                      <h2 className="js-deob-section-title">原始代码</h2>
+                      <h2 className={clsx(classes.jsDeobSectionTitle)}>原始代码</h2>
                       <p>把需要处理的 JavaScript 直接贴进来。</p>
                     </div>
                   </div>
@@ -599,18 +630,18 @@ function JsDeobPage() {
                   <CodeEditor value={sourceCode} onChange={setSourceCode} />
                 </div>
 
-                <div className="js-deob-panel js-deob-section">
-                  <div className="js-deob-editor-head">
+                <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+                  <div className={clsx(classes.jsDeobEditorHead)}>
                     <div>
-                      <h2 className="js-deob-section-title">处理结果</h2>
+                      <h2 className={clsx(classes.jsDeobSectionTitle)}>处理结果</h2>
                       <p>执行完成后会在这里显示整理后的输出。</p>
                     </div>
                   </div>
 
                   {errorMessage ? (
-                    <div className="js-deob-error">{errorMessage}</div>
+                    <div className={clsx(classes.jsDeobError)}>{errorMessage}</div>
                   ) : (
-                    <div className="js-deob-note">
+                    <div className={clsx(classes.jsDeobNote)}>
                       {parseTime === null
                         ? '还没有结果，点击“开始处理”后会在这里更新。'
                         : `最近一次处理耗时 ${parseTime} ms。`}
@@ -621,15 +652,15 @@ function JsDeobPage() {
                 </div>
               </div>
 
-              <div className="js-deob-panel js-deob-section">
-                <div className="js-deob-editor-head">
+              <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+                <div className={clsx(classes.jsDeobEditorHead)}>
                   <div>
-                    <h2 className="js-deob-section-title">运行日志</h2>
+                    <h2 className={clsx(classes.jsDeobSectionTitle)}>运行日志</h2>
                     <p>处理过程中的提示和错误会按时间顺序显示在这里。</p>
                   </div>
                   <button
                     type="button"
-                    className="js-deob-inline-action"
+                    className={clsx(classes.jsDeobInlineAction)}
                     onClick={clearLogs}
                     disabled={!logs.length}
                   >
@@ -638,18 +669,23 @@ function JsDeobPage() {
                   </button>
                 </div>
 
-                <div className="js-deob-console" ref={consoleBodyRef}>
+                <div className={clsx(classes.jsDeobConsole)} ref={consoleBodyRef}>
                   {logs.length ? (
                     logs.map((entry) => (
-                      <article key={entry.id} className="js-deob-console-entry">
-                        <time className="js-deob-console-time">
+                      <article
+                        key={entry.id}
+                        className={clsx(classes.jsDeobConsoleEntry)}
+                      >
+                        <time className={clsx(classes.jsDeobConsoleTime)}>
                           {formatLogTime(entry.timestamp)}
                         </time>
-                        <pre className="js-deob-console-message">{entry.message}</pre>
+                        <pre className={clsx(classes.jsDeobConsoleMessage)}>
+                          {entry.message}
+                        </pre>
                       </article>
                     ))
                   ) : (
-                    <div className="js-deob-console-empty">
+                    <div className={clsx(classes.jsDeobConsoleEmpty)}>
                       开始处理后，这里会实时出现日志。
                     </div>
                   )}

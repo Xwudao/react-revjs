@@ -1,5 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import './app-select.scss'
+import clsx from 'clsx'
+import classes from './app-select.module.scss'
 
 export interface AppSelectOption<T extends string = string> {
   value: T
@@ -57,10 +58,15 @@ export function AppSelect<T extends string>({
   }, [open])
 
   return (
-    <div className="app-select" data-open={open} data-disabled={disabled} ref={rootRef}>
+    <div
+      className={clsx(classes.appSelect)}
+      data-open={open}
+      data-disabled={disabled}
+      ref={rootRef}
+    >
       <button
         type="button"
-        className="app-select__trigger"
+        className={clsx(classes.appSelectTrigger)}
         aria-label={ariaLabel}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -68,29 +74,30 @@ export function AppSelect<T extends string>({
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
       >
-        <span className="app-select__value">
-          <span className="app-select__label">{selectedOption.label}</span>
+        <span className={clsx(classes.appSelectValue)}>
+          <span className={clsx(classes.appSelectLabel)}>{selectedOption.label}</span>
           {selectedOption.description && (
-            <span className="app-select__description">{selectedOption.description}</span>
+            <span className={clsx(classes.appSelectDescription)}>
+              {selectedOption.description}
+            </span>
           )}
         </span>
         <span
-          className={
-            open
-              ? 'i-mdi-chevron-up app-select__icon'
-              : 'i-mdi-chevron-down app-select__icon'
-          }
+          className={clsx(
+            open ? 'i-mdi-chevron-up' : 'i-mdi-chevron-down',
+            classes.appSelectIcon,
+          )}
           aria-hidden="true"
         />
       </button>
 
       {open && (
-        <div className="app-select__menu" id={listboxId} role="listbox">
+        <div className={clsx(classes.appSelectMenu)} id={listboxId} role="listbox">
           {options.map((option) => (
             <button
               key={option.value}
               type="button"
-              className="app-select__option"
+              className={clsx(classes.appSelectOption)}
               role="option"
               aria-selected={option.value === value}
               data-selected={option.value === value}
@@ -99,16 +106,19 @@ export function AppSelect<T extends string>({
                 setOpen(false)
               }}
             >
-              <span className="app-select__option-copy">
-                <span className="app-select__option-label">{option.label}</span>
+              <span className={clsx(classes.appSelectOptionCopy)}>
+                <span className={clsx(classes.appSelectOptionLabel)}>{option.label}</span>
                 {option.description && (
-                  <span className="app-select__option-description">
+                  <span className={clsx(classes.appSelectOptionDescription)}>
                     {option.description}
                   </span>
                 )}
               </span>
               {option.value === value && (
-                <span className="i-mdi-check app-select__check" aria-hidden="true" />
+                <span
+                  className={clsx('i-mdi-check', classes.appSelectCheck)}
+                  aria-hidden="true"
+                />
               )}
             </button>
           ))}

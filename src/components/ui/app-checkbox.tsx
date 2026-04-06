@@ -1,4 +1,5 @@
-import './app-checkbox.scss'
+import clsx from 'clsx'
+import classes from './app-checkbox.module.scss'
 
 interface AppCheckboxProps {
   checked: boolean
@@ -16,22 +17,26 @@ export function AppCheckbox({
   disabled = false,
 }: AppCheckboxProps) {
   return (
-    <label className="app-checkbox" data-disabled={disabled}>
+    <label className={clsx(classes.appCheckbox)} data-disabled={disabled}>
       <input
-        className="app-checkbox__native"
+        className={clsx(classes.appCheckboxNative)}
         type="checkbox"
         checked={checked}
         disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
       />
 
-      <span className="app-checkbox__box" aria-hidden="true">
-        {checked && <span className="i-mdi-check-bold app-checkbox__mark" />}
+      <span className={clsx(classes.appCheckboxBox)} aria-hidden="true">
+        {checked && (
+          <span className={clsx('i-mdi-check-bold', classes.appCheckboxMark)} />
+        )}
       </span>
 
-      <span className="app-checkbox__copy">
-        <span className="app-checkbox__label">{label}</span>
-        {description && <span className="app-checkbox__description">{description}</span>}
+      <span className={clsx(classes.appCheckboxCopy)}>
+        <span className={clsx(classes.appCheckboxLabel)}>{label}</span>
+        {description && (
+          <span className={clsx(classes.appCheckboxDescription)}>{description}</span>
+        )}
       </span>
     </label>
   )

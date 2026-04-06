@@ -11,7 +11,7 @@
   box-shadow: var(--shadow-xs);
 }
 
-.front-page__hero {
+.front-page-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(18rem, 0.85fr);
   gap: var(--space-4);
@@ -25,13 +25,13 @@
     color-mix(in srgb, var(--color-surface) 95%, transparent);
 }
 
-.front-page__hero-main {
+.front-page-hero-main {
   display: grid;
   gap: var(--space-4);
 }
 
-.front-page__eyebrow,
-.front-page__badge {
+.front-page-eyebrow,
+.front-page-badge {
   display: inline-flex;
   align-items: center;
   width: fit-content;
@@ -42,38 +42,38 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.front-page__eyebrow {
+.front-page-eyebrow {
   color: var(--color-accent);
   background: var(--color-accent-soft);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.front-page__title {
+.front-page-title {
   color: var(--color-text-strong);
   font-size: clamp(1.75rem, 2.2vw, 2.375rem);
   line-height: var(--line-height-tight);
   letter-spacing: var(--letter-spacing-tight);
 }
 
-.front-page__copy,
-.front-page__panel-head p,
-.front-page__metric span,
-.front-page__list span {
+.front-page-copy,
+.front-page-panel-head p,
+.front-page-metric span,
+.front-page-list span {
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   line-height: 1.6;
 }
 
-.front-page__actions {
+.front-page-actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   flex-wrap: wrap;
 }
 
-.front-page__action,
-.front-page__text-link {
+.front-page-action,
+.front-page-text-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -85,34 +85,31 @@
   font-weight: var(--font-weight-medium);
 }
 
-.front-page__action {
+.front-page-action {
   border: 1px solid var(--color-accent-border);
   background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
-.front-page__action--primary {
+.front-page-action-primary {
   background: var(--color-accent);
   color: var(--color-accent-contrast);
 }
 
-.front-page__tags,
-.front-page__principles {
+.front-page-tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
-.front-page__tags span,
-.front-page__principles span,
-.front-page__badge {
+.front-page-tags span,
+.front-page-badge {
   border: 1px solid var(--color-border-soft);
   background: color-mix(in srgb, var(--color-surface-muted) 72%, transparent);
   color: var(--color-text-strong);
 }
 
-.front-page__tags span,
-.front-page__principles span {
+.front-page-tags span {
   display: inline-flex;
   align-items: center;
   min-height: 1.875rem;
@@ -121,14 +118,14 @@
   font-size: var(--font-size-xs);
 }
 
-.front-page__hero-side,
-.front-page__list {
+.front-page-hero-side,
+.front-page-list {
   display: grid;
   gap: var(--space-3);
 }
 
-.front-page__metric,
-.front-page__list > div {
+.front-page-metric,
+.front-page-list > div {
   display: grid;
   gap: var(--space-1);
   padding: 0.9375rem;
@@ -137,27 +134,27 @@
   background: color-mix(in srgb, var(--color-surface-muted) 48%, transparent);
 }
 
-.front-page__metric strong,
-.front-page__panel-head h2,
-.front-page__list strong {
+.front-page-metric strong,
+.front-page-panel-head h2,
+.front-page-list strong {
   color: var(--color-text-strong);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
 }
 
-.front-page__grid {
+.front-page-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
-.front-page__panel {
+.front-page-panel {
   display: grid;
   gap: var(--space-4);
   padding: var(--space-5);
 }
 
-.front-page__panel--feature {
+.front-page-panel-feature {
   background:
     linear-gradient(
       180deg,
@@ -167,20 +164,20 @@
     color-mix(in srgb, var(--color-surface) 94%, transparent);
 }
 
-.front-page__panel-head {
+.front-page-panel-head {
   display: flex;
   align-items: start;
   justify-content: space-between;
   gap: var(--space-3);
 }
 
-.front-page__text-link {
+.front-page-text-link {
   color: var(--color-accent);
 }
 
 @media (max-width: 960px) {
-  .front-page__hero,
-  .front-page__grid {
+  .front-page-hero,
+  .front-page-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -190,12 +187,12 @@
     padding-top: var(--space-3);
   }
 
-  .front-page__hero,
-  .front-page__panel {
+  .front-page-hero,
+  .front-page-panel {
     padding: var(--space-4);
   }
 
-  .front-page__panel-head {
+  .front-page-panel-head {
     flex-direction: column;
   }
 }

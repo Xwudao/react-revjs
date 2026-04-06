@@ -23,6 +23,7 @@
     "@revjs/js-deob": "workspace:*",
     "@tanstack/react-router": "^1.168.10",
     "@uiw/react-codemirror": "^4.25.9",
+    "clsx": "^2.1.1",
     "debug": "^4.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

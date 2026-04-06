@@ -1,7 +1,8 @@
 import type { PropsWithChildren } from 'react'
+import clsx from 'clsx'
 import { Link } from '@tanstack/react-router'
 import { useAppConfig } from '@/provider/ConfigProvider'
-import './front-shell.scss'
+import classes from './front-shell.module.scss'
 
 type FrontShellProps = PropsWithChildren<{
   current: 'home' | 'js-deob'
@@ -20,9 +21,9 @@ const navItems = [
 
 export function FrontShell({ current, children }: FrontShellProps) {
   return (
-    <div className="front-shell">
+    <div className={clsx(classes.frontShell)}>
       <FrontHeader current={current} />
-      <div className="front-shell__body">{children}</div>
+      <div className={clsx(classes.frontShellBody)}>{children}</div>
       <FrontFooter />
     </div>
   )
@@ -32,11 +33,11 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
   const { accent, setAccent, theme, toggleTheme } = useAppConfig()
 
   return (
-    <header className="site-header">
-      <div className="site-header__inner">
-        <div className="site-brand">
-          <Link to="/" className="site-brand__link">
-            <span className="site-brand__mark" aria-hidden="true">
+    <header className={clsx(classes.siteHeader)}>
+      <div className={clsx(classes.siteHeaderInner)}>
+        <div className={clsx(classes.siteBrand)}>
+          <Link to="/" className={clsx(classes.siteBrandLink)}>
+            <span className={clsx(classes.siteBrandMark)} aria-hidden="true">
               <span className="i-mdi-code-braces text-[15px]" />
             </span>
             <span>
@@ -46,12 +47,12 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
           </Link>
         </div>
 
-        <nav className="site-nav" aria-label="Primary">
+        <nav className={clsx(classes.siteNav)} aria-label="Primary">
           {navItems.map((item) => (
             <Link
               key={item.key}
               to={item.to}
-              className="site-nav__link"
+              className={clsx(classes.siteNavLink)}
               data-current={current === item.key}
             >
               {item.label}
@@ -59,13 +60,13 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
           ))}
         </nav>
 
-        <div className="site-header__tools">
-          <div className="site-accent-switcher" aria-label="Accent preset">
+        <div className={clsx(classes.siteHeaderTools)}>
+          <div className={clsx(classes.siteAccentSwitcher)} aria-label="Accent preset">
             {accentOptions.map((item) => (
               <button
                 key={item.value}
                 type="button"
-                className="site-accent-switcher__item"
+                className={clsx(classes.siteAccentSwitcherItem)}
                 data-active={accent === item.value}
                 onClick={() => setAccent(item.value)}
                 aria-label={`Switch accent to ${item.label}`}
@@ -76,7 +77,11 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
             ))}
           </div>
 
-          <button type="button" className="site-tool-button" onClick={toggleTheme}>
+          <button
+            type="button"
+            className={clsx(classes.siteToolButton)}
+            onClick={toggleTheme}
+          >
             <span
               className={
                 theme === 'dark'
@@ -95,9 +100,9 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
 
 function FrontFooter() {
   return (
-    <footer className="site-footer">
-      <div className="site-footer__inner">
-        <div className="site-footer__brand">
+    <footer className={clsx(classes.siteFooter)}>
+      <div className={clsx(classes.siteFooterInner)}>
+        <div className={clsx(classes.siteFooterBrand)}>
           <strong>revjs</strong>
           <span>目前提供简单的在线工具入口，后续会继续补充。</span>
         </div>
