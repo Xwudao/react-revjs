@@ -41,7 +41,7 @@ function FrontHeader({ current }: { current: FrontShellProps['current'] }) {
             </span>
             <span>
               <strong>revjs</strong>
-              <span>compact tool front</span>
+              <span>在线工具</span>
             </span>
           </Link>
         </div>
@@ -99,13 +99,7 @@ function FrontFooter() {
       <div className="site-footer__inner">
         <div className="site-footer__brand">
           <strong>revjs</strong>
-          <span>前台页面保持工具站写法，浏览效率优先。</span>
-        </div>
-
-        <div className="site-footer__meta" aria-label="Workspace summary">
-          <span>Browser worker runtime</span>
-          <span>Shared deob core</span>
-          <span>CLI / Web 同仓维护</span>
+          <span>目前提供简单的在线工具入口，后续会继续补充。</span>
         </div>
       </div>
     </footer>

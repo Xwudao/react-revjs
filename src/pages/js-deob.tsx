@@ -1,5 +1,8 @@
 import type { Options } from '@revjs/js-deob'
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
+import { AppCheckbox } from '@/components/ui/app-checkbox'
+import { AppSelect, type AppSelectOption } from '@/components/ui/app-select'
+import { CodeEditor } from '@/components/ui/code-editor'
 import { FrontShell } from '@/components/front-shell'
 import JsDeobWorker from './js-deob.worker?worker'
 import './js-deob.scss'
@@ -36,6 +39,37 @@ const defaultOptions: EditableOptions = {
   manglePattern: '',
   mangleFlags: '',
 }
+
+const decoderMethodOptions: AppSelectOption<EditableOptions['decoderLocationMethod']>[] =
+  [
+    {
+      value: 'stringArray',
+      label: '字符串数组长度',
+      description: '适合大多数常见样本，优先按字符串数组定位。',
+    },
+    {
+      value: 'callCount',
+      label: '解密函数调用次数',
+      description: '适合已知调用规模的样本，按调用次数定位。',
+    },
+    {
+      value: 'evalCode',
+      label: '注入自定义代码',
+      description: '需要手动补环境或补函数时使用。',
+    },
+  ]
+
+const mangleModeOptions: AppSelectOption<EditableOptions['mangleMode']>[] = [
+  { value: 'off', label: '关闭', description: '保留原始变量名。' },
+  { value: 'hex', label: 'Hex (_0x)', description: '优先优化典型十六进制风格变量名。' },
+  { value: 'short', label: '短变量名', description: '优化较短的临时变量名。' },
+  { value: 'all', label: '全部变量', description: '尽量统一优化变量名。' },
+  {
+    value: 'custom',
+    label: '自定义正则',
+    description: '按自定义正则匹配需要优化的变量。',
+  },
+]
 
 function readStoredCode() {
   if (typeof window === 'undefined') return ''
@@ -141,7 +175,7 @@ function JsDeobPage() {
 
       if (message.type === 'result') {
         pushLog(
-          `反混淆完成，用时 ${message.parseTime} ms | 定位方式: ${optionsRef.current.decoderLocationMethod}`,
+          `处理完成，用时 ${message.parseTime} ms | 方式: ${optionsRef.current.decoderLocationMethod}`,
         )
         startTransition(() => {
           setOutputCode(message.code)
@@ -156,7 +190,7 @@ function JsDeobPage() {
     }
 
     worker.onerror = () => {
-      handleWorkerError('浏览器 worker 执行失败，请查看控制台。')
+      handleWorkerError('执行失败，请稍后重试或检查输入代码。')
     }
   }
 
@@ -216,7 +250,7 @@ function JsDeobPage() {
 
     pushLog(
       [
-        `开始反混淆 | 定位方式: ${options.decoderLocationMethod}`,
+        `开始处理 | 方式: ${options.decoderLocationMethod}`,
         options.decoderLocationMethod === 'stringArray' &&
         options.decoderStringArrayLength > 0
           ? `字符串数组长度: ${options.decoderStringArrayLength}`
@@ -241,8 +275,8 @@ function JsDeobPage() {
 
     spawnWorkerRef.current()
     setIsRunning(false)
-    setErrorMessage('已终止当前运行。')
-    pushLog('已终止当前运行。')
+    setErrorMessage('已停止当前任务。')
+    pushLog('已停止当前任务。')
   }
 
   async function copyOutput() {
@@ -275,15 +309,15 @@ function JsDeobPage() {
     <FrontShell current="js-deob">
       <main className="js-deob-page">
         <div className="js-deob-shell">
-          <section className="js-deob-panel js-deob-overview">
-            <div className="js-deob-overview__main">
+          <section className="js-deob-panel js-deob-hero">
+            <div className="js-deob-hero__main">
               <span className="js-deob-kicker">
-                <span className="i-mdi-console text-[15px]" aria-hidden="true" />
-                js deob workbench
+                <span className="i-mdi-code-json text-[15px]" aria-hidden="true" />
+                在线解混淆
               </span>
 
               <div className="js-deob-title-row">
-                <h1 className="js-deob-title">JS Deob 工作台</h1>
+                <h1 className="js-deob-title">JS Deob</h1>
                 <span className="js-deob-status-badge" data-running={isRunning}>
                   <span
                     className={
@@ -293,15 +327,20 @@ function JsDeobPage() {
                     }
                     aria-hidden="true"
                   />
-                  {isRunning ? 'Worker running' : 'Worker ready'}
+                  {isRunning ? '处理中' : '已就绪'}
                 </span>
               </div>
 
               <p className="js-deob-copy">
-                浏览器端直接执行仓库里的 deob
-                核心，主要用于仓库内快速贴代码、调参数、看日志和比对输出，
-                不按对外产品页去写说明。
+                直接粘贴待处理的
+                JavaScript，调整识别方式后运行，即可查看整理后的结果和日志。
               </p>
+
+              <div className="js-deob-highlights">
+                <span>适合常见字符串数组场景</span>
+                <span>支持自定义注入代码</span>
+                <span>输出与日志分区查看</span>
+              </div>
             </div>
 
             <div className="js-deob-actions">
@@ -317,7 +356,7 @@ function JsDeobPage() {
                   }
                   aria-hidden="true"
                 />
-                {isRunning ? '处理中...' : '运行反混淆'}
+                {isRunning ? '处理中...' : '开始处理'}
               </button>
               <button
                 type="button"
@@ -339,64 +378,43 @@ function JsDeobPage() {
                 disabled={!isRunning}
               >
                 <span className="i-mdi-stop-circle-outline" aria-hidden="true" />
-                终止运行
+                停止
               </button>
               <button type="button" className="js-deob-button" onClick={resetAll}>
                 <span className="i-mdi-refresh" aria-hidden="true" />
-                重置工作台
+                清空重来
               </button>
             </div>
-          </section>
-
-          <section className="js-deob-summary">
-            <article className="js-deob-panel js-deob-summary-card">
-              <strong>Last Run</strong>
-              <span>{parseTime === null ? '尚未执行' : `最近一次 ${parseTime} ms`}</span>
-              <code>{options.decoderLocationMethod}</code>
-            </article>
-            <article className="js-deob-panel js-deob-summary-card">
-              <strong>Runtime</strong>
-              <span>使用 browser worker 执行，便于在项目页里验证而不阻塞主线程。</span>
-              <code>@revjs/js-deob</code>
-            </article>
-            <article className="js-deob-panel js-deob-summary-card">
-              <strong>Storage</strong>
-              <span>输入代码和选项保存在本地，刷新页面后仍可继续当前验证过程。</span>
-              <code>localStorage</code>
-            </article>
           </section>
 
           <section className="js-deob-grid">
             <aside className="js-deob-sidebar">
               <div className="js-deob-panel js-deob-section">
-                <h2 className="js-deob-section-title">运行选项</h2>
-                <p className="js-deob-section-copy">
-                  只保留当前项目里最常用的定位、标记和变量名优化能力，避免把配置区写成面向普通用户的完整产品面板。
-                </p>
+                <div className="js-deob-section-head">
+                  <h2 className="js-deob-section-title">处理选项</h2>
+                  <p className="js-deob-section-copy">
+                    保留最常用的选项，避免一开始就看到过多解释。
+                  </p>
+                </div>
 
                 <div className="js-deob-form">
                   <div className="js-deob-field">
-                    <label htmlFor="decoder-method">解密器定位方式</label>
-                    <select
-                      id="decoder-method"
-                      className="js-deob-select"
+                    <span className="js-deob-field-label">识别方式</span>
+                    <AppSelect
                       value={options.decoderLocationMethod}
-                      onChange={(event) =>
-                        updateOptions({
-                          decoderLocationMethod: event.target
-                            .value as EditableOptions['decoderLocationMethod'],
-                        })
+                      options={decoderMethodOptions}
+                      ariaLabel="选择识别方式"
+                      onChange={(value) =>
+                        updateOptions({ decoderLocationMethod: value })
                       }
-                    >
-                      <option value="stringArray">字符串数组长度</option>
-                      <option value="callCount">解密函数调用次数</option>
-                      <option value="evalCode">注入自定义解密代码</option>
-                    </select>
+                    />
                   </div>
 
                   {options.decoderLocationMethod === 'callCount' && (
                     <div className="js-deob-field">
-                      <label htmlFor="decoder-call-count">调用次数</label>
+                      <label className="js-deob-field-label" htmlFor="decoder-call-count">
+                        调用次数
+                      </label>
                       <input
                         id="decoder-call-count"
                         className="js-deob-input"
@@ -417,7 +435,12 @@ function JsDeobPage() {
 
                   {options.decoderLocationMethod === 'stringArray' && (
                     <div className="js-deob-field">
-                      <label htmlFor="decoder-string-array-length">字符串数组长度</label>
+                      <label
+                        className="js-deob-field-label"
+                        htmlFor="decoder-string-array-length"
+                      >
+                        字符串数组长度
+                      </label>
                       <input
                         id="decoder-string-array-length"
                         className="js-deob-input"
@@ -440,7 +463,7 @@ function JsDeobPage() {
                         }}
                       />
                       <span className="js-deob-field-hint">
-                        指定长度可优先命中目标字符串数组，减少误匹配导致的长时间执行。
+                        已知长度时填写会更快命中目标。
                       </span>
                     </div>
                   )}
@@ -448,7 +471,9 @@ function JsDeobPage() {
                   {options.decoderLocationMethod === 'evalCode' && (
                     <>
                       <div className="js-deob-field">
-                        <label htmlFor="decoder-names">解密函数名</label>
+                        <label className="js-deob-field-label" htmlFor="decoder-names">
+                          解密函数名
+                        </label>
                         <input
                           id="decoder-names"
                           className="js-deob-input"
@@ -465,35 +490,29 @@ function JsDeobPage() {
                         />
                       </div>
                       <div className="js-deob-field">
-                        <label htmlFor="setup-code">注入执行代码</label>
-                        <textarea
-                          id="setup-code"
-                          className="js-deob-textarea"
+                        <span className="js-deob-field-label">注入代码</span>
+                        <CodeEditor
+                          compact
+                          minHeight="11rem"
                           value={options.setupCode}
-                          placeholder="// 需要在执行前注入的代码"
-                          spellCheck={false}
-                          onChange={(event) =>
-                            updateOptions({ setupCode: event.target.value })
-                          }
+                          onChange={(value) => updateOptions({ setupCode: value })}
                         />
                       </div>
                     </>
                   )}
 
-                  <label className="js-deob-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={options.isMarkEnable}
-                      onChange={(event) =>
-                        updateOptions({ isMarkEnable: event.target.checked })
-                      }
-                    />
-                    启用关键字标记
-                  </label>
+                  <AppCheckbox
+                    checked={options.isMarkEnable}
+                    label="标记常见关键字"
+                    description="帮助快速查看 debugger、签名或环境检测相关片段。"
+                    onChange={(checked) => updateOptions({ isMarkEnable: checked })}
+                  />
 
                   {options.isMarkEnable && (
                     <div className="js-deob-field">
-                      <label htmlFor="keywords">关键字列表</label>
+                      <label className="js-deob-field-label" htmlFor="keywords">
+                        关键字列表
+                      </label>
                       <input
                         id="keywords"
                         className="js-deob-input"
@@ -508,29 +527,21 @@ function JsDeobPage() {
                   )}
 
                   <div className="js-deob-field">
-                    <label htmlFor="mangle-mode">变量名优化</label>
-                    <select
-                      id="mangle-mode"
-                      className="js-deob-select"
+                    <span className="js-deob-field-label">变量名优化</span>
+                    <AppSelect
                       value={options.mangleMode}
-                      onChange={(event) =>
-                        updateOptions({
-                          mangleMode: event.target.value as EditableOptions['mangleMode'],
-                        })
-                      }
-                    >
-                      <option value="off">关闭</option>
-                      <option value="hex">Hex (_0x)</option>
-                      <option value="short">短变量名</option>
-                      <option value="all">全部变量</option>
-                      <option value="custom">自定义正则</option>
-                    </select>
+                      options={mangleModeOptions}
+                      ariaLabel="选择变量名优化方式"
+                      onChange={(value) => updateOptions({ mangleMode: value })}
+                    />
                   </div>
 
                   {options.mangleMode === 'custom' && (
                     <>
                       <div className="js-deob-field">
-                        <label htmlFor="mangle-pattern">正则</label>
+                        <label className="js-deob-field-label" htmlFor="mangle-pattern">
+                          匹配正则
+                        </label>
                         <input
                           id="mangle-pattern"
                           className="js-deob-input"
@@ -543,7 +554,9 @@ function JsDeobPage() {
                         />
                       </div>
                       <div className="js-deob-field">
-                        <label htmlFor="mangle-flags">Flags</label>
+                        <label className="js-deob-field-label" htmlFor="mangle-flags">
+                          Flags
+                        </label>
                         <input
                           id="mangle-flags"
                           className="js-deob-input"
@@ -560,64 +573,51 @@ function JsDeobPage() {
                 </div>
               </div>
 
-              <div className="js-deob-panel js-deob-section">
-                <h2 className="js-deob-section-title">执行说明</h2>
-                <p className="js-deob-section-copy">
-                  保持短说明，重点放在定位策略和排障节奏。
-                </p>
+              <div className="js-deob-panel js-deob-section js-deob-tips">
+                <div className="js-deob-section-head">
+                  <h2 className="js-deob-section-title">使用建议</h2>
+                  <p className="js-deob-section-copy">不确定怎么选时，可以从这里开始。</p>
+                </div>
                 <ul className="js-deob-side-notes">
-                  <li>字符串数组模式适合大多数典型字符串解密场景。</li>
-                  <li>调用次数模式适合已知解密器调用规模的样本。</li>
-                  <li>注入代码模式适合需要手动补环境或补函数的情况。</li>
-                  <li>关键字标记可帮助快速定位 `debugger`、签名与环境检测逻辑。</li>
+                  <li>先试字符串数组长度模式，命中率通常更高。</li>
+                  <li>已知解密调用规模时，再切到调用次数模式。</li>
+                  <li>遇到缺环境或缺函数时，再使用注入自定义代码。</li>
                 </ul>
               </div>
             </aside>
 
-            <section className="js-deob-editors">
-              <div className="js-deob-panel js-deob-section">
-                <div className="js-deob-editor-head">
-                  <div>
-                    <h2 className="js-deob-section-title">输入代码</h2>
-                    <p>粘贴待处理代码，执行前只保留必要说明。</p>
+            <section className="js-deob-workbench">
+              <div className="js-deob-editors-grid">
+                <div className="js-deob-panel js-deob-section">
+                  <div className="js-deob-editor-head">
+                    <div>
+                      <h2 className="js-deob-section-title">原始代码</h2>
+                      <p>把需要处理的 JavaScript 直接贴进来。</p>
+                    </div>
                   </div>
-                </div>
-                <textarea
-                  className="js-deob-textarea"
-                  value={sourceCode}
-                  placeholder="在这里粘贴需要反混淆的 JS 代码..."
-                  spellCheck={false}
-                  onChange={(event) => setSourceCode(event.target.value)}
-                />
-              </div>
 
-              <div className="js-deob-panel js-deob-section">
-                <div className="js-deob-editor-head">
-                  <div>
-                    <h2 className="js-deob-section-title">输出结果</h2>
-                    <p>成功执行后显示格式化输出与最近一次运行状态。</p>
-                  </div>
+                  <CodeEditor value={sourceCode} onChange={setSourceCode} />
                 </div>
 
-                {errorMessage ? (
-                  <div className="js-deob-error">{errorMessage}</div>
-                ) : (
-                  <div className="js-deob-note">
-                    {parseTime === null
-                      ? '尚未执行。调整参数后点击“运行反混淆”即可。'
-                      : `最近一次运行耗时 ${parseTime} ms。`}
+                <div className="js-deob-panel js-deob-section">
+                  <div className="js-deob-editor-head">
+                    <div>
+                      <h2 className="js-deob-section-title">处理结果</h2>
+                      <p>执行完成后会在这里显示整理后的输出。</p>
+                    </div>
                   </div>
-                )}
 
-                <div className="mt-4">
-                  <textarea
-                    className="js-deob-textarea"
-                    data-output="true"
-                    value={outputCode}
-                    placeholder="反混淆结果会显示在这里..."
-                    spellCheck={false}
-                    readOnly
-                  />
+                  {errorMessage ? (
+                    <div className="js-deob-error">{errorMessage}</div>
+                  ) : (
+                    <div className="js-deob-note">
+                      {parseTime === null
+                        ? '还没有结果，点击“开始处理”后会在这里更新。'
+                        : `最近一次处理耗时 ${parseTime} ms。`}
+                    </div>
+                  )}
+
+                  <CodeEditor readOnly value={outputCode} />
                 </div>
               </div>
 
@@ -625,7 +625,7 @@ function JsDeobPage() {
                 <div className="js-deob-editor-head">
                   <div>
                     <h2 className="js-deob-section-title">运行日志</h2>
-                    <p>定位、解密和错误信息在这里按时间顺序输出。</p>
+                    <p>处理过程中的提示和错误会按时间顺序显示在这里。</p>
                   </div>
                   <button
                     type="button"
@@ -650,7 +650,7 @@ function JsDeobPage() {
                     ))
                   ) : (
                     <div className="js-deob-console-empty">
-                      运行反混淆后，这里会实时显示日志输出。
+                      开始处理后，这里会实时出现日志。
                     </div>
                   )}
                 </div>

@@ -24,6 +24,9 @@ Build frontend pages that read like capable product surfaces, not promotional he
 - When a page reflects current project state, internal tooling, or implementation status, write copy as project-facing documentation or workbench notes.
 - Do not rewrite project-status pages into end-user marketing copy, onboarding copy, or consumer-facing feature explanations unless explicitly requested.
 - Prefer language that describes current repo behavior, validation scope, and implementation boundaries over aspirational product claims.
+- For ordinary end-user tool pages, strip internal repo wording such as current scope, validation entry, shared core, CLI/Web maintenance, runtime/storage summaries, or similar implementation-facing metadata.
+- If the site currently exposes only one tool, keep the homepage minimal and entrance-oriented instead of adding explanatory panels that read like internal status notes.
+- Tool pages should explain only what helps a user complete the task now; avoid exposing internal execution details unless they are required for actual operation or troubleshooting.
 
 ## RevJS Conventions
 
@@ -37,6 +40,8 @@ Build frontend pages that read like capable product surfaces, not promotional he
 - Keep action groups dense but readable.
 - Use light surface separation, subtle status pills, and compact metadata rows.
 - Favor persistent utility controls in shared header/footer areas when they help navigation or theme control.
+- When replacing raw form controls, prefer reusable project-level components so selects, checkboxes, and similar inputs keep a consistent visual language across tools.
+- For code-heavy tool pages, prefer a real editor such as CodeMirror over plain textarea when the task involves reading, editing, or comparing source code.
 
 ## Layout Rules
 
@@ -44,6 +49,7 @@ Build frontend pages that read like capable product surfaces, not promotional he
 - Start from shared tokens in `src/styles/_tokens.scss`.
 - Prefer compact cards, split panels, and two-column utility layouts over full-bleed marketing compositions.
 - Keep explanatory copy short; tool pages should show state, controls, and output early.
+- On tool pages, prioritize the work surface: controls first, editor/result regions early, and logs or secondary notes after the main task flow.
 
 ## Avoid
 
