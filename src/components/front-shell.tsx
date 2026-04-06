@@ -1,11 +1,11 @@
 import type { PropsWithChildren } from 'react'
 import clsx from 'clsx'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { useAppConfig } from '@/provider/ConfigProvider'
 import classes from './front-shell.module.scss'
 
 type FrontShellProps = PropsWithChildren<{
-  current: 'home' | 'js-deob'
+  isPending?: boolean
 }>
 
 const accentOptions = [
@@ -19,11 +19,36 @@ const navItems = [
   { key: 'js-deob', label: 'JS Deob', to: '/js-deob' },
 ] as const
 
-export function FrontShell({ current, children }: FrontShellProps) {
+export function FrontShell({ isPending = false, children }: FrontShellProps) {
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const current = pathname.startsWith('/js-deob') ? 'js-deob' : 'home'
+
   return (
     <div className={clsx(classes.frontShell)}>
       <FrontHeader current={current} />
-      <div className={clsx(classes.frontShellBody)}>{children}</div>
+      <div className={clsx(classes.frontShellBody, classes.frontShellMain)}>
+        <div className={clsx(classes.frontShellOutlet)} aria-busy={isPending}>
+          {children}
+        </div>
+        <div
+          className={clsx(classes.routePending, isPending && classes.routePendingVisible)}
+          aria-hidden={!isPending}
+        >
+          <div
+            className={clsx(classes.routePendingCard)}
+            role="status"
+            aria-live="polite"
+          >
+            <span
+              className={clsx('i-mdi-loading animate-spin', classes.routePendingIcon)}
+              aria-hidden="true"
+            />
+            <span>页面切换中...</span>
+          </div>
+        </div>
+      </div>
       <FrontFooter />
     </div>
   )

@@ -4,7 +4,6 @@ import clsx from 'clsx'
 import { AppCheckbox } from '@/components/ui/app-checkbox'
 import { AppSelect, type AppSelectOption } from '@/components/ui/app-select'
 import { CodeEditor } from '@/components/ui/code-editor'
-import { FrontShell } from '@/components/front-shell'
 import JsDeobWorker from './js-deob.worker?worker'
 import classes from './js-deob.module.scss'
 
@@ -391,460 +390,446 @@ function JsDeobPage() {
   )
 
   return (
-    <FrontShell current="js-deob">
-      <main className={clsx(classes.jsDeobPage)}>
-        <div className={clsx(classes.jsDeobShell)}>
-          <input
-            ref={sourceFileInputRef}
-            type="file"
-            accept=".js,.mjs,.cjs,.txt,text/javascript,application/javascript"
-            className={clsx(classes.jsDeobHiddenInput)}
-            onChange={importSourceFile}
-          />
+    <main className={clsx(classes.jsDeobPage)}>
+      <div className={clsx(classes.jsDeobShell)}>
+        <input
+          ref={sourceFileInputRef}
+          type="file"
+          accept=".js,.mjs,.cjs,.txt,text/javascript,application/javascript"
+          className={clsx(classes.jsDeobHiddenInput)}
+          onChange={importSourceFile}
+        />
 
-          <section className={clsx(classes.jsDeobPanel, classes.jsDeobHero)}>
-            <div className={clsx(classes.jsDeobHeroMain)}>
-              <span className={clsx(classes.jsDeobKicker)}>
-                <span className="i-mdi-code-json text-[15px]" aria-hidden="true" />
-                在线解混淆
-              </span>
+        <section className={clsx(classes.jsDeobPanel, classes.jsDeobHero)}>
+          <div className={clsx(classes.jsDeobHeroMain)}>
+            <span className={clsx(classes.jsDeobKicker)}>
+              <span className="i-mdi-code-json text-[15px]" aria-hidden="true" />
+              在线解混淆
+            </span>
 
-              <div className={clsx(classes.jsDeobTitleRow)}>
-                <h1 className={clsx(classes.jsDeobTitle)}>JS Deob</h1>
-                <span
-                  className={clsx(classes.jsDeobStatusBadge)}
-                  data-running={isRunning}
-                >
-                  <span
-                    className={
-                      isRunning
-                        ? 'i-mdi-loading animate-spin'
-                        : 'i-mdi-check-circle-outline'
-                    }
-                    aria-hidden="true"
-                  />
-                  {isRunning ? '处理中' : '已就绪'}
-                </span>
-              </div>
-
-              <p className={clsx(classes.jsDeobCopy)}>
-                直接粘贴待处理的
-                JavaScript，调整识别方式后运行，即可查看整理后的结果和日志。
-              </p>
-
-              <div className={clsx(classes.jsDeobHighlights)}>
-                <span>适合常见字符串数组场景</span>
-                <span>支持自定义注入代码</span>
-                <span>输出与日志分区查看</span>
-              </div>
-            </div>
-
-            <div className={clsx(classes.jsDeobActions)}>
-              <button
-                type="button"
-                className={clsx(classes.jsDeobButton, classes.jsDeobButtonPrimary)}
-                onClick={runDeobfuscation}
-                disabled={isRunning}
-              >
+            <div className={clsx(classes.jsDeobTitleRow)}>
+              <h1 className={clsx(classes.jsDeobTitle)}>JS Deob</h1>
+              <span className={clsx(classes.jsDeobStatusBadge)} data-running={isRunning}>
                 <span
                   className={
-                    isRunning ? 'i-mdi-loading animate-spin' : 'i-mdi-play-circle-outline'
+                    isRunning
+                      ? 'i-mdi-loading animate-spin'
+                      : 'i-mdi-check-circle-outline'
                   }
                   aria-hidden="true"
                 />
-                {isRunning ? '处理中...' : '开始处理'}
-              </button>
-              <button
-                type="button"
-                className={clsx(classes.jsDeobButton)}
-                onClick={cancelDeobfuscation}
-                disabled={!isRunning}
-              >
-                <span className="i-mdi-stop-circle-outline" aria-hidden="true" />
-                停止
-              </button>
-              <button
-                type="button"
-                className={clsx(classes.jsDeobButton)}
-                onClick={resetAll}
-              >
-                <span className="i-mdi-refresh" aria-hidden="true" />
-                清空重来
-              </button>
+                {isRunning ? '处理中' : '已就绪'}
+              </span>
             </div>
-          </section>
 
-          <section className={clsx(classes.jsDeobGrid)}>
-            <aside className={clsx(classes.jsDeobSidebar)}>
-              <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
-                <div className={clsx(classes.jsDeobSectionHead)}>
-                  <h2 className={clsx(classes.jsDeobSectionTitle)}>处理选项</h2>
-                  <p className={clsx(classes.jsDeobSectionCopy)}>
-                    保留最常用的选项，避免一开始就看到过多解释。
-                  </p>
+            <p className={clsx(classes.jsDeobCopy)}>
+              直接粘贴待处理的
+              JavaScript，调整识别方式后运行，即可查看整理后的结果和日志。
+            </p>
+
+            <div className={clsx(classes.jsDeobHighlights)}>
+              <span>适合常见字符串数组场景</span>
+              <span>支持自定义注入代码</span>
+              <span>输出与日志分区查看</span>
+            </div>
+          </div>
+
+          <div className={clsx(classes.jsDeobActions)}>
+            <button
+              type="button"
+              className={clsx(classes.jsDeobButton, classes.jsDeobButtonPrimary)}
+              onClick={runDeobfuscation}
+              disabled={isRunning}
+            >
+              <span
+                className={
+                  isRunning ? 'i-mdi-loading animate-spin' : 'i-mdi-play-circle-outline'
+                }
+                aria-hidden="true"
+              />
+              {isRunning ? '处理中...' : '开始处理'}
+            </button>
+            <button
+              type="button"
+              className={clsx(classes.jsDeobButton)}
+              onClick={cancelDeobfuscation}
+              disabled={!isRunning}
+            >
+              <span className="i-mdi-stop-circle-outline" aria-hidden="true" />
+              停止
+            </button>
+            <button
+              type="button"
+              className={clsx(classes.jsDeobButton)}
+              onClick={resetAll}
+            >
+              <span className="i-mdi-refresh" aria-hidden="true" />
+              清空重来
+            </button>
+          </div>
+        </section>
+
+        <section className={clsx(classes.jsDeobGrid)}>
+          <aside className={clsx(classes.jsDeobSidebar)}>
+            <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+              <div className={clsx(classes.jsDeobSectionHead)}>
+                <h2 className={clsx(classes.jsDeobSectionTitle)}>处理选项</h2>
+                <p className={clsx(classes.jsDeobSectionCopy)}>
+                  保留最常用的选项，避免一开始就看到过多解释。
+                </p>
+              </div>
+
+              <div className={clsx(classes.jsDeobForm)}>
+                <div className={clsx(classes.jsDeobField)}>
+                  <span className={clsx(classes.jsDeobFieldLabel)}>识别方式</span>
+                  <AppSelect
+                    value={options.decoderLocationMethod}
+                    options={decoderMethodOptions}
+                    ariaLabel="选择识别方式"
+                    onChange={(value) => updateOptions({ decoderLocationMethod: value })}
+                  />
                 </div>
 
-                <div className={clsx(classes.jsDeobForm)}>
+                {options.decoderLocationMethod === 'callCount' && (
                   <div className={clsx(classes.jsDeobField)}>
-                    <span className={clsx(classes.jsDeobFieldLabel)}>识别方式</span>
-                    <AppSelect
-                      value={options.decoderLocationMethod}
-                      options={decoderMethodOptions}
-                      ariaLabel="选择识别方式"
-                      onChange={(value) =>
-                        updateOptions({ decoderLocationMethod: value })
+                    <label
+                      className={clsx(classes.jsDeobFieldLabel)}
+                      htmlFor="decoder-call-count"
+                    >
+                      调用次数
+                    </label>
+                    <input
+                      id="decoder-call-count"
+                      className={clsx(classes.jsDeobInput)}
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={options.decoderCallCount}
+                      onChange={(event) =>
+                        updateOptions({
+                          decoderCallCount:
+                            Number(event.target.value) || defaultOptions.decoderCallCount,
+                        })
                       }
                     />
                   </div>
+                )}
 
-                  {options.decoderLocationMethod === 'callCount' && (
+                {options.decoderLocationMethod === 'stringArray' && (
+                  <div className={clsx(classes.jsDeobField)}>
+                    <label
+                      className={clsx(classes.jsDeobFieldLabel)}
+                      htmlFor="decoder-string-array-length"
+                    >
+                      字符串数组长度
+                    </label>
+                    <input
+                      id="decoder-string-array-length"
+                      className={clsx(classes.jsDeobInput)}
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={
+                        options.decoderStringArrayLength > 0
+                          ? options.decoderStringArrayLength
+                          : ''
+                      }
+                      placeholder="留空或 0 表示自动匹配"
+                      onChange={(event) => {
+                        const value = Number(event.target.value)
+
+                        updateOptions({
+                          decoderStringArrayLength:
+                            Number.isFinite(value) && value > 0 ? value : 0,
+                        })
+                      }}
+                    />
+                    <span className={clsx(classes.jsDeobFieldHint)}>
+                      已知长度时填写会更快命中目标。
+                    </span>
+                  </div>
+                )}
+
+                {options.decoderLocationMethod === 'evalCode' && (
+                  <>
                     <div className={clsx(classes.jsDeobField)}>
                       <label
                         className={clsx(classes.jsDeobFieldLabel)}
-                        htmlFor="decoder-call-count"
+                        htmlFor="decoder-names"
                       >
-                        调用次数
+                        解密函数名
                       </label>
                       <input
-                        id="decoder-call-count"
-                        className={clsx(classes.jsDeobInput)}
-                        type="number"
-                        min="1"
-                        step="1"
-                        value={options.decoderCallCount}
-                        onChange={(event) =>
-                          updateOptions({
-                            decoderCallCount:
-                              Number(event.target.value) ||
-                              defaultOptions.decoderCallCount,
-                          })
-                        }
-                      />
-                    </div>
-                  )}
-
-                  {options.decoderLocationMethod === 'stringArray' && (
-                    <div className={clsx(classes.jsDeobField)}>
-                      <label
-                        className={clsx(classes.jsDeobFieldLabel)}
-                        htmlFor="decoder-string-array-length"
-                      >
-                        字符串数组长度
-                      </label>
-                      <input
-                        id="decoder-string-array-length"
-                        className={clsx(classes.jsDeobInput)}
-                        type="number"
-                        min="0"
-                        step="1"
-                        value={
-                          options.decoderStringArrayLength > 0
-                            ? options.decoderStringArrayLength
-                            : ''
-                        }
-                        placeholder="留空或 0 表示自动匹配"
-                        onChange={(event) => {
-                          const value = Number(event.target.value)
-
-                          updateOptions({
-                            decoderStringArrayLength:
-                              Number.isFinite(value) && value > 0 ? value : 0,
-                          })
-                        }}
-                      />
-                      <span className={clsx(classes.jsDeobFieldHint)}>
-                        已知长度时填写会更快命中目标。
-                      </span>
-                    </div>
-                  )}
-
-                  {options.decoderLocationMethod === 'evalCode' && (
-                    <>
-                      <div className={clsx(classes.jsDeobField)}>
-                        <label
-                          className={clsx(classes.jsDeobFieldLabel)}
-                          htmlFor="decoder-names"
-                        >
-                          解密函数名
-                        </label>
-                        <input
-                          id="decoder-names"
-                          className={clsx(classes.jsDeobInput)}
-                          type="text"
-                          value={
-                            typeof options.decoderNames === 'string'
-                              ? options.decoderNames
-                              : options.decoderNames.join(', ')
-                          }
-                          placeholder="例如: _0xabc123"
-                          onChange={(event) =>
-                            updateOptions({ decoderNames: event.target.value })
-                          }
-                        />
-                      </div>
-                      <div className={clsx(classes.jsDeobField)}>
-                        <span className={clsx(classes.jsDeobFieldLabel)}>注入代码</span>
-                        <CodeEditor
-                          compact
-                          minHeight="11rem"
-                          value={options.setupCode}
-                          onChange={(value) => updateOptions({ setupCode: value })}
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  <AppCheckbox
-                    checked={options.isMarkEnable}
-                    label="标记常见关键字"
-                    description="帮助快速查看 debugger、签名或环境检测相关片段。"
-                    onChange={(checked) => updateOptions({ isMarkEnable: checked })}
-                  />
-
-                  {options.isMarkEnable && (
-                    <div className={clsx(classes.jsDeobField)}>
-                      <label
-                        className={clsx(classes.jsDeobFieldLabel)}
-                        htmlFor="keywords"
-                      >
-                        关键字列表
-                      </label>
-                      <input
-                        id="keywords"
+                        id="decoder-names"
                         className={clsx(classes.jsDeobInput)}
                         type="text"
-                        value={keywordsValue}
-                        placeholder="debugger, sign, token"
+                        value={
+                          typeof options.decoderNames === 'string'
+                            ? options.decoderNames
+                            : options.decoderNames.join(', ')
+                        }
+                        placeholder="例如: _0xabc123"
                         onChange={(event) =>
-                          updateOptions({ keywords: formatKeywords(event.target.value) })
+                          updateOptions({ decoderNames: event.target.value })
                         }
                       />
                     </div>
-                  )}
+                    <div className={clsx(classes.jsDeobField)}>
+                      <span className={clsx(classes.jsDeobFieldLabel)}>注入代码</span>
+                      <CodeEditor
+                        compact
+                        minHeight="11rem"
+                        value={options.setupCode}
+                        onChange={(value) => updateOptions({ setupCode: value })}
+                      />
+                    </div>
+                  </>
+                )}
 
+                <AppCheckbox
+                  checked={options.isMarkEnable}
+                  label="标记常见关键字"
+                  description="帮助快速查看 debugger、签名或环境检测相关片段。"
+                  onChange={(checked) => updateOptions({ isMarkEnable: checked })}
+                />
+
+                {options.isMarkEnable && (
                   <div className={clsx(classes.jsDeobField)}>
-                    <span className={clsx(classes.jsDeobFieldLabel)}>变量名优化</span>
-                    <AppSelect
-                      value={options.mangleMode}
-                      options={mangleModeOptions}
-                      ariaLabel="选择变量名优化方式"
-                      onChange={(value) => updateOptions({ mangleMode: value })}
+                    <label className={clsx(classes.jsDeobFieldLabel)} htmlFor="keywords">
+                      关键字列表
+                    </label>
+                    <input
+                      id="keywords"
+                      className={clsx(classes.jsDeobInput)}
+                      type="text"
+                      value={keywordsValue}
+                      placeholder="debugger, sign, token"
+                      onChange={(event) =>
+                        updateOptions({ keywords: formatKeywords(event.target.value) })
+                      }
                     />
                   </div>
-
-                  {options.mangleMode === 'custom' && (
-                    <>
-                      <div className={clsx(classes.jsDeobField)}>
-                        <label
-                          className={clsx(classes.jsDeobFieldLabel)}
-                          htmlFor="mangle-pattern"
-                        >
-                          匹配正则
-                        </label>
-                        <input
-                          id="mangle-pattern"
-                          className={clsx(classes.jsDeobInput)}
-                          type="text"
-                          value={options.manglePattern}
-                          placeholder="例如: _0x[a-f\\d]+"
-                          onChange={(event) =>
-                            updateOptions({ manglePattern: event.target.value })
-                          }
-                        />
-                      </div>
-                      <div className={clsx(classes.jsDeobField)}>
-                        <label
-                          className={clsx(classes.jsDeobFieldLabel)}
-                          htmlFor="mangle-flags"
-                        >
-                          Flags
-                        </label>
-                        <input
-                          id="mangle-flags"
-                          className={clsx(classes.jsDeobInput)}
-                          type="text"
-                          value={options.mangleFlags}
-                          placeholder="例如: gim"
-                          onChange={(event) =>
-                            updateOptions({ mangleFlags: event.target.value })
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div
-                className={clsx(
-                  classes.jsDeobPanel,
-                  classes.jsDeobSection,
-                  classes.jsDeobTips,
                 )}
-              >
-                <div className={clsx(classes.jsDeobSectionHead)}>
-                  <h2 className={clsx(classes.jsDeobSectionTitle)}>使用建议</h2>
-                  <p className={clsx(classes.jsDeobSectionCopy)}>
-                    不确定怎么选时，可以从这里开始。
-                  </p>
+
+                <div className={clsx(classes.jsDeobField)}>
+                  <span className={clsx(classes.jsDeobFieldLabel)}>变量名优化</span>
+                  <AppSelect
+                    value={options.mangleMode}
+                    options={mangleModeOptions}
+                    ariaLabel="选择变量名优化方式"
+                    onChange={(value) => updateOptions({ mangleMode: value })}
+                  />
                 </div>
-                <ul className={clsx(classes.jsDeobSideNotes)}>
-                  <li>先试字符串数组长度模式，命中率通常更高。</li>
-                  <li>已知解密调用规模时，再切到调用次数模式。</li>
-                  <li>遇到缺环境或缺函数时，再使用注入自定义代码。</li>
-                </ul>
+
+                {options.mangleMode === 'custom' && (
+                  <>
+                    <div className={clsx(classes.jsDeobField)}>
+                      <label
+                        className={clsx(classes.jsDeobFieldLabel)}
+                        htmlFor="mangle-pattern"
+                      >
+                        匹配正则
+                      </label>
+                      <input
+                        id="mangle-pattern"
+                        className={clsx(classes.jsDeobInput)}
+                        type="text"
+                        value={options.manglePattern}
+                        placeholder="例如: _0x[a-f\\d]+"
+                        onChange={(event) =>
+                          updateOptions({ manglePattern: event.target.value })
+                        }
+                      />
+                    </div>
+                    <div className={clsx(classes.jsDeobField)}>
+                      <label
+                        className={clsx(classes.jsDeobFieldLabel)}
+                        htmlFor="mangle-flags"
+                      >
+                        Flags
+                      </label>
+                      <input
+                        id="mangle-flags"
+                        className={clsx(classes.jsDeobInput)}
+                        type="text"
+                        value={options.mangleFlags}
+                        placeholder="例如: gim"
+                        onChange={(event) =>
+                          updateOptions({ mangleFlags: event.target.value })
+                        }
+                      />
+                    </div>
+                  </>
+                )}
               </div>
-            </aside>
+            </div>
 
-            <section className={clsx(classes.jsDeobWorkbench)}>
-              <div className={clsx(classes.jsDeobEditorsGrid)}>
-                <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
-                  <div className={clsx(classes.jsDeobEditorHead)}>
-                    <div>
-                      <h2 className={clsx(classes.jsDeobSectionTitle)}>原始代码</h2>
-                      <p>把需要处理的 JavaScript 直接贴进来。</p>
-                      <span className={clsx(classes.jsDeobEditorMeta)}>
-                        {sourceCode.length} 字符 · {sourceLineCount} 行
-                      </span>
-                    </div>
+            <div
+              className={clsx(
+                classes.jsDeobPanel,
+                classes.jsDeobSection,
+                classes.jsDeobTips,
+              )}
+            >
+              <div className={clsx(classes.jsDeobSectionHead)}>
+                <h2 className={clsx(classes.jsDeobSectionTitle)}>使用建议</h2>
+                <p className={clsx(classes.jsDeobSectionCopy)}>
+                  不确定怎么选时，可以从这里开始。
+                </p>
+              </div>
+              <ul className={clsx(classes.jsDeobSideNotes)}>
+                <li>先试字符串数组长度模式，命中率通常更高。</li>
+                <li>已知解密调用规模时，再切到调用次数模式。</li>
+                <li>遇到缺环境或缺函数时，再使用注入自定义代码。</li>
+              </ul>
+            </div>
+          </aside>
 
-                    <div className={clsx(classes.jsDeobEditorActions)}>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={() => sourceFileInputRef.current?.click()}
-                      >
-                        <span className="i-mdi-file-upload-outline" aria-hidden="true" />
-                        导入文件
-                      </button>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={pasteFromClipboard}
-                      >
-                        <span
-                          className="i-mdi-clipboard-arrow-down-outline"
-                          aria-hidden="true"
-                        />
-                        粘贴剪贴板
-                      </button>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={fillExample}
-                      >
-                        <span className="i-mdi-flask-outline" aria-hidden="true" />
-                        填充示例
-                      </button>
-                    </div>
+          <section className={clsx(classes.jsDeobWorkbench)}>
+            <div className={clsx(classes.jsDeobEditorsGrid)}>
+              <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+                <div className={clsx(classes.jsDeobEditorHead)}>
+                  <div>
+                    <h2 className={clsx(classes.jsDeobSectionTitle)}>原始代码</h2>
+                    <p>把需要处理的 JavaScript 直接贴进来。</p>
+                    <span className={clsx(classes.jsDeobEditorMeta)}>
+                      {sourceCode.length} 字符 · {sourceLineCount} 行
+                    </span>
                   </div>
 
-                  <CodeEditor value={sourceCode} onChange={setSourceCode} />
-                </div>
-
-                <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
-                  <div className={clsx(classes.jsDeobEditorHead)}>
-                    <div>
-                      <h2 className={clsx(classes.jsDeobSectionTitle)}>处理结果</h2>
-                      <p>执行完成后会在这里显示整理后的输出。</p>
-                      <span className={clsx(classes.jsDeobEditorMeta)}>
-                        {outputCode.length} 字符 · {outputLineCount} 行
-                      </span>
-                    </div>
-
-                    <div className={clsx(classes.jsDeobEditorActions)}>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={copyOutput}
-                        disabled={!outputCode}
-                      >
-                        <span className="i-mdi-content-copy" aria-hidden="true" />
-                        {copyState === 'done'
-                          ? '已复制结果'
-                          : copyState === 'failed'
-                            ? '复制失败'
-                            : '复制输出'}
-                      </button>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={downloadOutput}
-                        disabled={!outputCode}
-                      >
-                        <span className="i-mdi-download" aria-hidden="true" />
-                        下载结果
-                      </button>
-                      <button
-                        type="button"
-                        className={clsx(classes.jsDeobInlineAction)}
-                        onClick={applyOutputToInput}
-                        disabled={!outputCode}
-                      >
-                        <span className="i-mdi-swap-horizontal" aria-hidden="true" />
-                        回填输入
-                      </button>
-                    </div>
+                  <div className={clsx(classes.jsDeobEditorActions)}>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={() => sourceFileInputRef.current?.click()}
+                    >
+                      <span className="i-mdi-file-upload-outline" aria-hidden="true" />
+                      导入文件
+                    </button>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={pasteFromClipboard}
+                    >
+                      <span
+                        className="i-mdi-clipboard-arrow-down-outline"
+                        aria-hidden="true"
+                      />
+                      粘贴剪贴板
+                    </button>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={fillExample}
+                    >
+                      <span className="i-mdi-flask-outline" aria-hidden="true" />
+                      填充示例
+                    </button>
                   </div>
-
-                  {errorMessage ? (
-                    <div className={clsx(classes.jsDeobError)}>{errorMessage}</div>
-                  ) : (
-                    <div className={clsx(classes.jsDeobNote)}>
-                      {parseTime === null
-                        ? '还没有结果，点击“开始处理”后会在这里更新。'
-                        : `最近一次处理耗时 ${parseTime} ms。`}
-                    </div>
-                  )}
-
-                  <CodeEditor readOnly value={outputCode} />
                 </div>
+
+                <CodeEditor value={sourceCode} onChange={setSourceCode} />
               </div>
 
               <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
                 <div className={clsx(classes.jsDeobEditorHead)}>
                   <div>
-                    <h2 className={clsx(classes.jsDeobSectionTitle)}>运行日志</h2>
-                    <p>处理过程中的提示和错误会按时间顺序显示在这里。</p>
+                    <h2 className={clsx(classes.jsDeobSectionTitle)}>处理结果</h2>
+                    <p>执行完成后会在这里显示整理后的输出。</p>
+                    <span className={clsx(classes.jsDeobEditorMeta)}>
+                      {outputCode.length} 字符 · {outputLineCount} 行
+                    </span>
                   </div>
-                  <button
-                    type="button"
-                    className={clsx(classes.jsDeobInlineAction)}
-                    onClick={clearLogs}
-                    disabled={!logs.length}
-                  >
-                    <span className="i-mdi-delete-outline" aria-hidden="true" />
-                    清空日志
-                  </button>
+
+                  <div className={clsx(classes.jsDeobEditorActions)}>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={copyOutput}
+                      disabled={!outputCode}
+                    >
+                      <span className="i-mdi-content-copy" aria-hidden="true" />
+                      {copyState === 'done'
+                        ? '已复制结果'
+                        : copyState === 'failed'
+                          ? '复制失败'
+                          : '复制输出'}
+                    </button>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={downloadOutput}
+                      disabled={!outputCode}
+                    >
+                      <span className="i-mdi-download" aria-hidden="true" />
+                      下载结果
+                    </button>
+                    <button
+                      type="button"
+                      className={clsx(classes.jsDeobInlineAction)}
+                      onClick={applyOutputToInput}
+                      disabled={!outputCode}
+                    >
+                      <span className="i-mdi-swap-horizontal" aria-hidden="true" />
+                      回填输入
+                    </button>
+                  </div>
                 </div>
 
-                <div className={clsx(classes.jsDeobConsole)} ref={consoleBodyRef}>
-                  {logs.length ? (
-                    logs.map((entry) => (
-                      <article
-                        key={entry.id}
-                        className={clsx(classes.jsDeobConsoleEntry)}
-                      >
-                        <time className={clsx(classes.jsDeobConsoleTime)}>
-                          {formatLogTime(entry.timestamp)}
-                        </time>
-                        <pre className={clsx(classes.jsDeobConsoleMessage)}>
-                          {entry.message}
-                        </pre>
-                      </article>
-                    ))
-                  ) : (
-                    <div className={clsx(classes.jsDeobConsoleEmpty)}>
-                      开始处理后，这里会实时出现日志。
-                    </div>
-                  )}
-                </div>
+                {errorMessage ? (
+                  <div className={clsx(classes.jsDeobError)}>{errorMessage}</div>
+                ) : (
+                  <div className={clsx(classes.jsDeobNote)}>
+                    {parseTime === null
+                      ? '还没有结果，点击“开始处理”后会在这里更新。'
+                      : `最近一次处理耗时 ${parseTime} ms。`}
+                  </div>
+                )}
+
+                <CodeEditor readOnly value={outputCode} />
               </div>
-            </section>
+            </div>
+
+            <div className={clsx(classes.jsDeobPanel, classes.jsDeobSection)}>
+              <div className={clsx(classes.jsDeobEditorHead)}>
+                <div>
+                  <h2 className={clsx(classes.jsDeobSectionTitle)}>运行日志</h2>
+                  <p>处理过程中的提示和错误会按时间顺序显示在这里。</p>
+                </div>
+                <button
+                  type="button"
+                  className={clsx(classes.jsDeobInlineAction)}
+                  onClick={clearLogs}
+                  disabled={!logs.length}
+                >
+                  <span className="i-mdi-delete-outline" aria-hidden="true" />
+                  清空日志
+                </button>
+              </div>
+
+              <div className={clsx(classes.jsDeobConsole)} ref={consoleBodyRef}>
+                {logs.length ? (
+                  logs.map((entry) => (
+                    <article key={entry.id} className={clsx(classes.jsDeobConsoleEntry)}>
+                      <time className={clsx(classes.jsDeobConsoleTime)}>
+                        {formatLogTime(entry.timestamp)}
+                      </time>
+                      <pre className={clsx(classes.jsDeobConsoleMessage)}>
+                        {entry.message}
+                      </pre>
+                    </article>
+                  ))
+                ) : (
+                  <div className={clsx(classes.jsDeobConsoleEmpty)}>
+                    开始处理后，这里会实时出现日志。
+                  </div>
+                )}
+              </div>
+            </div>
           </section>
-        </div>
-      </main>
-    </FrontShell>
+        </section>
+      </div>
+    </main>
   )
 }
 

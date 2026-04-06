@@ -10,6 +10,56 @@
   padding: var(--space-5) var(--space-6) var(--space-8);
 }
 
+.front-shell-main {
+  position: relative;
+  flex: 1;
+}
+
+.front-shell-outlet {
+  min-height: 100%;
+}
+
+.route-pending {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-canvas) 62%, transparent);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-2xl);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    visibility var(--duration-fast) var(--ease-standard);
+}
+
+.route-pending-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.route-pending-card {
+  @include card-surface;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  color: var(--color-text-strong);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.route-pending-icon {
+  color: var(--color-accent);
+  font-size: 1.125rem;
+}
+
 .site-header,
 .site-footer {
   width: 100%;
