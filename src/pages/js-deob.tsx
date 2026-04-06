@@ -1,6 +1,7 @@
 import type { Options } from '@revjs/js-deob'
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { FrontShell } from '@/components/front-shell'
+import JsDeobWorker from './js-deob.worker?worker'
 import './js-deob.scss'
 
 type EditableOptions = Required<Omit<Options, 'sandbox'>>
@@ -16,7 +17,6 @@ type WorkerMessage =
   | { type: 'result'; code: string; parseTime: number }
   | { type: 'error'; message: string; timestamp?: number }
 
-const workerUrl = new URL('./js-deob.worker.ts', import.meta.url)
 const maxLogs = 200
 
 const storageKeys = {
@@ -128,7 +128,7 @@ function JsDeobPage() {
   spawnWorkerRef.current = () => {
     workerRef.current?.terminate()
 
-    const worker = new Worker(workerUrl, { type: 'module' })
+    const worker = new JsDeobWorker({ type: 'module' })
     workerRef.current = worker
 
     worker.onmessage = (event: MessageEvent<WorkerMessage>) => {

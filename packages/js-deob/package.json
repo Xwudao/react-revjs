@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown src/index.ts --format esm --dts --sourcemap --platform node --out-dir dist --clean && tsdown src/cli.ts --format esm --sourcemap --platform node --out-dir dist --no-clean",
+    "build": "tsdown",
     "start": "node dist/cli.mjs"
   },
   "dependencies": {
