@@ -9,10 +9,10 @@ function IndexPage() {
         <section className="front-card front-page__hero">
           <div className="front-page__hero-main">
             <span className="front-page__eyebrow">revjs / frontend workbench</span>
-            <h1 className="front-page__title">RevJS 前台工作台</h1>
+            <h1 className="front-page__title">RevJS 前台验证页</h1>
             <p className="front-page__copy">
-              面向工具与内容页的前台入口。当前先聚焦 JS
-              Deob，页面保持紧凑、直接，优先展示能力、状态与处理入口。
+              用来记录当前项目前台形态与 JS Deob
+              入口，服务于仓库内联调、样式校准和交互验证， 不是面向普通用户的介绍页。
             </p>
 
             <div className="front-page__actions">
@@ -34,15 +34,19 @@ function IndexPage() {
           <div className="front-page__hero-side">
             <article className="front-page__metric">
               <strong>Browser</strong>
-              <span>浏览器端直接跑工作区源码，适合快速验证规则与输出。</span>
+              <span>
+                浏览器端直接跑工作区源码，方便验证规则改动、参数组合和输出差异。
+              </span>
             </article>
             <article className="front-page__metric">
               <strong>CLI</strong>
-              <span>同一套实现可走 `pnpm cli:js-deob`，避免 Web / CLI 规则漂移。</span>
+              <span>
+                同一套实现也走 pnpm cli:js-deob，用来避免 Web 和 CLI 的行为漂移。
+              </span>
             </article>
             <article className="front-page__metric">
               <strong>Layout</strong>
-              <span>正文、标签与操作区统一收敛到更小巧的内容页密度。</span>
+              <span>正文、标签与操作区按项目态内容页收紧，不按对外产品页去包装。</span>
             </article>
           </div>
         </section>
@@ -51,24 +55,26 @@ function IndexPage() {
           <article className="front-card front-page__panel front-page__panel--feature">
             <div className="front-page__panel-head">
               <div>
-                <h2>JS Deob 工作台</h2>
-                <p>当前主入口，面向粘贴代码、调参、执行与查看日志。</p>
+                <h2>JS Deob 验证入口</h2>
+                <p>当前主入口，用于仓库内粘贴样例、调参数、执行并查看日志。</p>
               </div>
-              <span className="front-page__badge">Ready</span>
+              <span className="front-page__badge">In Repo</span>
             </div>
 
             <div className="front-page__list">
               <div>
                 <strong>输入 / 输出</strong>
-                <span>双栏工作区，保留源码输入、结果输出和实时日志。</span>
+                <span>双栏区域保留源码输入、结果输出和实时日志，便于做前后对照。</span>
               </div>
               <div>
                 <strong>运行参数</strong>
-                <span>覆盖字符串数组、调用次数、注入代码和变量名优化等核心开关。</span>
+                <span>
+                  覆盖字符串数组、调用次数、注入代码和变量名优化等当前常用开关。
+                </span>
               </div>
               <div>
                 <strong>工作流</strong>
-                <span>更适合边调边看，而不是承载大段说明性文案。</span>
+                <span>优先承载项目验证流程，不额外堆面向普通用户的说明文案。</span>
               </div>
             </div>
 
@@ -81,17 +87,16 @@ function IndexPage() {
           <article className="front-card front-page__panel">
             <div className="front-page__panel-head">
               <div>
-                <h2>前台基线</h2>
-                <p>当前项目前台页面默认遵循的 UI 方向。</p>
+                <h2>当前范围</h2>
+                <p>这里只保留当前仓库里已经接上的前台入口和实现边界。</p>
               </div>
             </div>
 
             <div className="front-page__principles">
-              <span>正文与标签优先控制在 12px 到 16px</span>
-              <span>卡片、按钮、表单间距保持克制</span>
-              <span>层级、边框、浅底色替代重装饰</span>
-              <span>搜索、详情、工具页优先信息效率</span>
-              <span>避免营销页式 hero 与大面积留白</span>
+              <span>首页当前只承担项目态展示和入口分发</span>
+              <span>JS Deob 是现阶段唯一已接通的工作台页面</span>
+              <span>浏览器端和 CLI 共用同一套 deob 核心实现</span>
+              <span>页面内容优先反映仓库现状，不补对外包装文案</span>
             </div>
           </article>
         </section>

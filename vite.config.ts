@@ -1,4 +1,5 @@
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import babel from '@rolldown/plugin-babel'
 import * as path from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -29,11 +30,14 @@ export default defineConfig({
     },
   },
   plugins: [
+    tanstackRouter({
+      target: 'react',
+    }),
     nodePolyfills({ exclude: ['fs'] }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     checker({
-      typescript: true,
+      oxlint: true,
     }),
     UnoCSS({
       configFile: resolve('./uno.config.ts'),

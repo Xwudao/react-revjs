@@ -299,7 +299,8 @@ function JsDeobPage() {
 
               <p className="js-deob-copy">
                 浏览器端直接执行仓库里的 deob
-                核心，适合快速贴代码、调参数、看日志和比对输出。
+                核心，主要用于仓库内快速贴代码、调参数、看日志和比对输出，
+                不按对外产品页去写说明。
               </p>
             </div>
 
@@ -355,12 +356,12 @@ function JsDeobPage() {
             </article>
             <article className="js-deob-panel js-deob-summary-card">
               <strong>Runtime</strong>
-              <span>使用 browser worker 执行，尽量避免阻塞主线程。</span>
+              <span>使用 browser worker 执行，便于在项目页里验证而不阻塞主线程。</span>
               <code>@revjs/js-deob</code>
             </article>
             <article className="js-deob-panel js-deob-summary-card">
               <strong>Storage</strong>
-              <span>输入代码和选项保存在本地，刷新页面仍可继续调试。</span>
+              <span>输入代码和选项保存在本地，刷新页面后仍可继续当前验证过程。</span>
               <code>localStorage</code>
             </article>
           </section>
@@ -370,7 +371,7 @@ function JsDeobPage() {
               <div className="js-deob-panel js-deob-section">
                 <h2 className="js-deob-section-title">运行选项</h2>
                 <p className="js-deob-section-copy">
-                  优先保留最常用的定位、标记和变量名优化能力，避免配置区过度膨胀。
+                  只保留当前项目里最常用的定位、标记和变量名优化能力，避免把配置区写成面向普通用户的完整产品面板。
                 </p>
 
                 <div className="js-deob-form">

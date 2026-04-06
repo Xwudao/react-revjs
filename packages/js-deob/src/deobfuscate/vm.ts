@@ -89,7 +89,7 @@ export class VMDecoder {
     try {
       const result = await this.sandbox(code)
       return result as unknown[]
-    } catch (_error) {
+    } catch  {
       // eslint-disable-next-line unused-imports/no-unused-vars
       // ignore
     }

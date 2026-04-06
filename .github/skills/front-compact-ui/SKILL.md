@@ -19,6 +19,18 @@ Build frontend pages that read like capable product surfaces, not promotional he
 - Search pages, detail pages, tool workbenches, and community-style content pages should optimize scanning efficiency.
 - Do not introduce poster-like hero sections, oversized type, or decorative empty space unless explicitly required.
 
+## Copy Rules
+
+- When a page reflects current project state, internal tooling, or implementation status, write copy as project-facing documentation or workbench notes.
+- Do not rewrite project-status pages into end-user marketing copy, onboarding copy, or consumer-facing feature explanations unless explicitly requested.
+- Prefer language that describes current repo behavior, validation scope, and implementation boundaries over aspirational product claims.
+
+## RevJS Conventions
+
+- TanStack Router should use the Vite plugin workflow with file-based routes under `src/routes`.
+- Keep `src/router.tsx` limited to `createRouter(...)` and import the generated route tree from `src/routeTree.gen.ts`.
+- Do not hand-maintain `createRoute` trees in revjs unless there is a concrete routing need that the plugin workflow cannot cover.
+
 ## Interaction Rules
 
 - Prefer native-feeling button feedback and simple state changes over hover lift, glow sweeps, or dramatic shadows.
